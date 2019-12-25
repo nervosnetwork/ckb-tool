@@ -1,13 +1,14 @@
 mod context;
+mod to_debugger_json;
 mod tx_builder;
 
 pub use context::Context;
 pub use tx_builder::TxBuilder;
 
 // re-exports
+pub use ckb_error;
 pub use ckb_script::DataLoader;
 pub use ckb_types;
-pub use ckb_error;
 
 const MAX_CYCLES: u64 = std::u32::MAX as u64;
 

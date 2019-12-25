@@ -43,7 +43,7 @@ fn build_resolved_tx(data_loader: &Context, tx: &TransactionView) -> ResolvedTra
 }
 
 pub struct TxBuilder {
-    context: Context,
+    pub(crate) context: Context,
     max_cycles: u64,
     lock_bin: Vec<u8>,
     type_bin: Option<Vec<u8>>,
@@ -74,6 +74,7 @@ impl TxBuilder {
             max_cycles: MAX_CYCLES,
         }
     }
+
     pub fn lock_bin(mut self, lock_bin: Vec<u8>) -> Self {
         self.lock_bin = lock_bin;
         self
