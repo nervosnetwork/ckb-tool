@@ -9,11 +9,22 @@ pub use tx_builder::TxBuilder;
 pub use ckb_error;
 pub use ckb_script::DataLoader;
 pub use ckb_types;
+pub use ckb_types::bytes;
 
-const MAX_CYCLES: u64 = std::u32::MAX as u64;
+pub fn calc_data_hash(data: &[u8]) -> ckb_types::packed::Byte32 {
+    use ckb_types::packed::CellOutput;
+    CellOutput::calc_data_hash(data)
+}
 
 #[test]
 fn test_dummy_lock() {
-    let verify_result = TxBuilder::default().lock_bin(Vec::new()).verify();
+    let mut context = Context::default();
+    let lock_bin = bytes::Bytes::new();
+    context.deploy_contract(lock_bin.clone());
+    let tx = TxBuilder::default()
+        .lock_bin(lock_bin)
+        .inject_and_build(&mut context)
+        .expect("build tx");
+    let verify_result = context.verify_tx(&tx, std::u32::MAX.into());
     assert!(verify_result.is_err());
 }
