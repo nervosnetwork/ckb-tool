@@ -71,7 +71,7 @@ impl TxBuilder {
         self
     }
 
-    pub fn inject_and_build(&mut self, context: &mut Context) -> Option<TransactionView> {
+    pub fn inject_and_build(&mut self, context: &mut Context) -> Result<TransactionView, &str> {
         let input_capacity = Capacity::shannons(self.input_capacity);
         let output_capacity = Capacity::shannons(self.output_capacity);
 
@@ -84,7 +84,9 @@ impl TxBuilder {
         let previous_index = 0;
         let previous_out_point = OutPoint::new(previous_tx_hash, previous_index);
         let lock_data_hash = CellOutput::calc_data_hash(&self.lock_bin);
-        let lock_out_point = context.get_contract_out_point(&lock_data_hash)?;
+        let lock_out_point = context
+            .get_contract_out_point(&lock_data_hash)
+            .ok_or("can't found contract by lock_data_hash")?;
         // setup unlock script
         let lock_script = Script::new_builder()
             .code_hash(lock_data_hash)
@@ -127,7 +129,9 @@ impl TxBuilder {
             .output_data(Bytes::new().pack());
         if let Some(ref type_bin) = self.type_bin {
             let type_data_hash = CellOutput::calc_data_hash(type_bin);
-            let type_out_point = context.get_contract_out_point(&type_data_hash)?;
+            let type_out_point = context
+                .get_contract_out_point(&type_data_hash)
+                .ok_or("can't found contract by type_data_hash")?;
             tx_builder = tx_builder.cell_dep(
                 CellDep::new_builder()
                     .out_point(type_out_point.to_owned())
@@ -152,6 +156,6 @@ impl TxBuilder {
             .set_witnesses(witnesses)
             .set_outputs_data(outputs_data)
             .build();
-        Some(tx)
+        Ok(tx)
     }
 }
