@@ -7,6 +7,7 @@ pub use tx_builder::TxBuilder;
 
 // re-exports
 pub use ckb_error;
+pub use ckb_hash;
 pub use ckb_script::DataLoader;
 pub use ckb_types;
 pub use ckb_types::bytes;
