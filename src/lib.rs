@@ -17,15 +17,27 @@ pub fn calc_data_hash(data: &[u8]) -> ckb_types::packed::Byte32 {
     CellOutput::calc_data_hash(data)
 }
 
-#[test]
-fn test_dummy_lock() {
-    let mut context = Context::default();
-    let lock_bin = bytes::Bytes::new();
-    context.deploy_contract(lock_bin.clone());
-    let tx = TxBuilder::default()
-        .lock_bin(lock_bin)
-        .inject_and_build(&mut context)
-        .expect("build tx");
-    let verify_result = context.verify_tx(&tx, std::u32::MAX.into());
-    assert!(verify_result.is_err());
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use ckb_types::{core::ScriptHashType, packed::*, prelude::*};
+    #[test]
+    fn test_dummy_lock() {
+        let mut context = Context::default();
+        let lock_bin = bytes::Bytes::new();
+        context.deploy_contract(lock_bin.clone());
+        let lock_code_hash = calc_data_hash(&lock_bin);
+        let tx = TxBuilder::default()
+            .lock_script(
+                Script::new_builder()
+                    .code_hash(lock_code_hash)
+                    .hash_type(ScriptHashType::Data.into())
+                    .build()
+                    .as_bytes(),
+            )
+            .inject_and_build(&mut context)
+            .expect("build tx");
+        let verify_result = context.verify_tx(&tx, std::u32::MAX.into());
+        assert!(verify_result.is_err());
+    }
 }

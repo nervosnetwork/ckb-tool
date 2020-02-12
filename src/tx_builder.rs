@@ -1,16 +1,17 @@
 use super::Context;
 use ckb_types::{
     bytes::Bytes,
-    core::{Capacity, DepType, ScriptHashType, TransactionBuilder, TransactionView},
+    core::{Capacity, DepType, TransactionBuilder, TransactionView},
     packed::{CellDep, CellInput, CellOutput, OutPoint, Script},
     prelude::*,
 };
 use rand::{thread_rng, Rng};
 
 pub struct TxBuilder {
-    lock_bin: Bytes,
-    type_bin: Option<Bytes>,
+    lock_script: Bytes,
+    type_script: Option<Bytes>,
     previous_output_data: Bytes,
+    previous_cell: Option<Bytes>,
     input_capacity: u64,
     output_capacity: u64,
     witnesses: Vec<Bytes>,
@@ -26,9 +27,10 @@ impl Default for TxBuilder {
 impl TxBuilder {
     pub fn new() -> TxBuilder {
         TxBuilder {
-            lock_bin: Bytes::new(),
-            type_bin: None,
+            lock_script: Script::default().as_bytes(),
+            type_script: None,
             previous_output_data: Bytes::new(),
+            previous_cell: None,
             input_capacity: 41,
             output_capacity: 41,
             witnesses: Vec::new(),
@@ -36,18 +38,23 @@ impl TxBuilder {
         }
     }
 
-    pub fn lock_bin(mut self, lock_bin: Bytes) -> Self {
-        self.lock_bin = lock_bin;
+    pub fn lock_script(mut self, lock_script: Bytes) -> Self {
+        self.lock_script = lock_script;
         self
     }
 
-    pub fn type_bin(mut self, type_bin: Bytes) -> Self {
-        self.type_bin = Some(type_bin);
+    pub fn type_script(mut self, type_script: Bytes) -> Self {
+        self.type_script = Some(type_script);
         self
     }
 
     pub fn previous_output_data(mut self, data: Bytes) -> Self {
         self.previous_output_data = data;
+        self
+    }
+
+    pub fn previous_cell(mut self, cell: Bytes) -> Self {
+        self.previous_cell = Some(cell);
         self
     }
 
@@ -83,35 +90,29 @@ impl TxBuilder {
         };
         let previous_index = 0;
         let previous_out_point = OutPoint::new(previous_tx_hash, previous_index);
-        let lock_data_hash = CellOutput::calc_data_hash(&self.lock_bin);
+        let lock_script = Script::new_unchecked(self.lock_script.clone());
         let lock_out_point = context
-            .get_contract_out_point(&lock_data_hash)
+            .get_contract_out_point(&lock_script.code_hash())
             .ok_or("can't found contract by lock_data_hash")?;
-        // setup unlock script
-        let lock_script = Script::new_builder()
-            .code_hash(lock_data_hash)
-            .hash_type(ScriptHashType::Data.into())
-            .build();
-        let cell_to_spent = CellOutput::new_builder()
-            .capacity(input_capacity.pack())
-            .lock(lock_script)
-            .build();
         let mut output_cell = CellOutput::new_builder()
             .capacity(output_capacity.pack())
             .build();
 
         // setup type script
-        if let Some(ref type_bin) = self.type_bin.clone() {
-            let type_data_hash = CellOutput::calc_data_hash(type_bin);
-            let type_script = Script::new_builder()
-                .code_hash(type_data_hash)
-                .hash_type(ScriptHashType::Data.into())
-                .build();
+        if let Some(type_script) = self.type_script.clone() {
             output_cell = output_cell
                 .as_builder()
-                .type_(Some(type_script).pack())
+                .type_(Some(Script::new_unchecked(type_script)).pack())
                 .build();
         }
+        // setup unlock script
+        let cell_to_spent = match self.previous_cell.clone() {
+            Some(cell) => CellOutput::new_unchecked(cell),
+            None => CellOutput::new_builder()
+                .capacity(input_capacity.pack())
+                .lock(lock_script)
+                .build(),
+        };
         context.insert_cell(
             previous_out_point.clone(),
             cell_to_spent,
@@ -127,10 +128,10 @@ impl TxBuilder {
             )
             .output(output_cell)
             .output_data(Bytes::new().pack());
-        if let Some(ref type_bin) = self.type_bin {
-            let type_data_hash = CellOutput::calc_data_hash(type_bin);
+        if let Some(ref type_script) = self.type_script {
+            let type_script = Script::new_unchecked(type_script.clone());
             let type_out_point = context
-                .get_contract_out_point(&type_data_hash)
+                .get_contract_out_point(&type_script.code_hash())
                 .ok_or("can't found contract by type_data_hash")?;
             tx_builder = tx_builder.cell_dep(
                 CellDep::new_builder()
