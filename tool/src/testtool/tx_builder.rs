@@ -1,4 +1,4 @@
-use super::Context;
+use super::context::Context;
 use ckb_types::{
     bytes::Bytes,
     core::{Capacity, DepType, TransactionBuilder, TransactionView},
@@ -158,5 +158,30 @@ impl TxBuilder {
             .set_outputs_data(outputs_data)
             .build();
         Ok(tx)
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use ckb_types::{core::ScriptHashType, bytes};
+    #[test]
+    fn test_dummy_lock() {
+        let mut context = Context::default();
+        let lock_bin = bytes::Bytes::new();
+        context.deploy_contract(lock_bin.clone());
+        let lock_code_hash = CellOutput::calc_data_hash(&lock_bin);
+        let tx = TxBuilder::default()
+            .lock_script(
+                Script::new_builder()
+                    .code_hash(lock_code_hash)
+                    .hash_type(ScriptHashType::Data.into())
+                    .build()
+                    .as_bytes(),
+            )
+            .inject_and_build(&mut context)
+            .expect("build tx");
+        let verify_result = context.verify_tx(&tx, std::u32::MAX.into());
+        assert!(verify_result.is_err());
     }
 }

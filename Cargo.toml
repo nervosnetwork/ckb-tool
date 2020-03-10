@@ -1,16 +1,5 @@
-[package]
-name = "ckb-contract-tool"
-version = "0.1.0"
-authors = ["jjy <jjyruby@gmail.com>"]
-edition = "2018"
-
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
-
-[dependencies]
-rand = "0.7"
-ckb-types = { git = "https://github.com/nervosnetwork/ckb", tag = "v0.26.0-rc2" }
-ckb-error = { git = "https://github.com/nervosnetwork/ckb", tag = "v0.26.0-rc2" }
-ckb-script = { git = "https://github.com/nervosnetwork/ckb", tag = "v0.26.0-rc2" }
-ckb-hash = { git = "https://github.com/nervosnetwork/ckb", tag = "v0.26.0-rc2" }
-ckb-sdk-types = { git = "https://github.com/nervosnetwork/ckb-cli", tag = "v0.26.0" }
-serde_json = "1.0"
+[workspace]
+members = [
+    "tool",
+    "cli",
+]

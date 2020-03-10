@@ -1,0 +1,20 @@
+[[cells]]
+name = "secp256k1_data"
+location = { out_point = { tx_hash = "genesis", index = 1 } }
+
+[[cells]]
+name = "udt_wallet"
+location = { file = "cells/udt_wallet" }
+
+[lock]
+code_hash = "0x0000000000000000000000000000000000000000000000000000000000000000"
+args = "0x"
+hash_type = "data"
+
+# Dep group cells
+[[dep_groups]]
+name = "udt_wallet"
+cells = [
+  "udt_wallet",
+  "secp256k1_data"
+]
