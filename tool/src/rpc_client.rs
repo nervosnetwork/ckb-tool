@@ -159,4 +159,10 @@ impl RpcClient {
             .get_lock_hash_index_states()
             .expect("rpc call get_lock_hash_index_states")
     }
+
+    pub fn get_block_by_number(&self, n: BlockNumber) -> Option<BlockView> {
+        self.inner()
+            .get_block_by_number(n)
+            .expect("rpc call get_block_by_number")
+    }
 }

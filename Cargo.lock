@@ -403,10 +403,12 @@ dependencies = [
 name = "ckb-tool"
 version = "0.1.0"
 dependencies = [
+ "ckb-chain-spec 0.26.0-pre (git+https://github.com/nervosnetwork/ckb?tag=v0.26.0-rc2)",
  "ckb-crypto 0.26.0-pre (git+https://github.com/nervosnetwork/ckb?tag=v0.26.0-rc2)",
  "ckb-error 0.26.0-pre (git+https://github.com/nervosnetwork/ckb?tag=v0.26.0-rc2)",
  "ckb-hash 0.26.0-pre (git+https://github.com/nervosnetwork/ckb?tag=v0.26.0-rc2)",
  "ckb-jsonrpc-types 0.26.0-pre (git+https://github.com/nervosnetwork/ckb?tag=v0.26.0-rc2)",
+ "ckb-resource 0.26.0-pre (git+https://github.com/nervosnetwork/ckb?tag=v0.26.0-rc2)",
  "ckb-script 0.26.0-pre (git+https://github.com/nervosnetwork/ckb?tag=v0.26.0-rc2)",
  "ckb-sdk-types 0.26.0 (git+https://github.com/nervosnetwork/ckb-cli?tag=v0.26.0)",
  "ckb-types 0.26.0-pre (git+https://github.com/nervosnetwork/ckb?tag=v0.26.0-rc2)",
@@ -422,6 +424,7 @@ name = "ckb-tool-cli"
 version = "0.1.0"
 dependencies = [
  "ckb-tool 0.1.0",
+ "rand 0.7.2 (registry+https://github.com/rust-lang/crates.io-index)",
  "toml 0.5.5 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 

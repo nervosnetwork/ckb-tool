@@ -1,10 +1,10 @@
 [[cells]]
 name = "secp256k1_data"
-location = { out_point = { tx_hash = "genesis", index = 1 } }
+location = { genesis_cellbase = { index = 1 } }
 
 [[cells]]
 name = "udt_wallet"
-location = { file = "cells/udt_wallet" }
+location = { file = "/home/jjy/workspace/ckb-system-scripts/specs/cells/udt_wallet" }
 
 [lock]
 code_hash = "0x0000000000000000000000000000000000000000000000000000000000000000"
