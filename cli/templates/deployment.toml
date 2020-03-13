@@ -1,0 +1,23 @@
+[[cells]]
+name = "secp256k1_data"
+create_type_id = false
+location = { index = 1 }
+
+# [[cells]]
+# name = "my_cell"
+# create_type_id = true
+# location = { file = ".." }
+
+# Replace with your own lock if you want to unlock deployed cells.
+[lock]
+code_hash = "0x0000000000000000000000000000000000000000000000000000000000000000"
+args = "0x"
+hash_type = "data"
+
+# # Dep group cells
+# [[dep_groups]]
+# name = "my dep group"
+# cells = [
+#   "my_cell",
+#   "secp256k1_data"
+# ]
