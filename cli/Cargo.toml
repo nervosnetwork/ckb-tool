@@ -10,3 +10,5 @@ edition = "2018"
 ckb-tool = { path = "../tool" }
 toml = "0.5"
 rand = "0.7"
+clap = "2.33"
+lazy_static = "1.4.0"

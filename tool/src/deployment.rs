@@ -62,20 +62,24 @@ pub struct DeploymentContext {
 
 pub struct Deployment {
     wallet: Wallet,
+    tx_fee: Capacity,
 }
 
 impl Deployment {
     pub fn new(wallet: Wallet) -> Self {
-        Deployment { wallet }
+        // TODO optimize tx fee
+        let tx_fee = Capacity::bytes(100).expect("fee");
+        Deployment { wallet, tx_fee }
     }
 
-    pub fn process(&self, config: DeploymentConfig) -> DeploymentContext {
+    pub fn process(&mut self, config: DeploymentConfig) -> DeploymentContext {
         let cells = &config.cells;
         let mut context = DeploymentContext::default();
-        let tx = self.build_cell_deploy_tx(&mut context, cells, self.wallet.generate_lock());
+        let tx = self.build_cell_deploy_tx(&mut context, cells, config.lock.clone().into());
         // send tx
-        self.wallet.rpc_client().send_transaction(tx.data().into());
+        self.wallet.send_transaction(&tx);
         context.cells_deploy_tx_hash = tx.hash().unpack();
+        println!("send transaction {:#x}", context.cells_deploy_tx_hash);
         // build map cell name -> out point
         let mut cells_map = HashMap::with_capacity(cells.len());
         let mut i = 0;
@@ -102,8 +106,9 @@ impl Deployment {
             config.lock.into(),
         );
         // send tx
-        self.wallet.rpc_client().send_transaction(tx.data().into());
+        self.wallet.send_transaction(&tx);
         context.dep_groups_deploy_tx_hash = tx.hash().unpack();
+        println!("send transaction {:#x}", context.dep_groups_deploy_tx_hash);
         context
     }
 
@@ -133,7 +138,7 @@ impl Deployment {
         }
         let live_cells = self
             .wallet
-            .find_live_cells(Capacity::bytes(capacity).expect("capacity"));
+            .find_live_cells(Capacity::bytes(capacity).expect("capacity"), self.tx_fee);
         let inputs: Vec<_> = live_cells
             .into_iter()
             .map(|cell| {
@@ -208,7 +213,7 @@ impl Deployment {
         }
         let live_cells = self
             .wallet
-            .find_live_cells(Capacity::bytes(capacity).expect("capacity"));
+            .find_live_cells(Capacity::bytes(capacity).expect("capacity"), self.tx_fee);
         let inputs: Vec<_> = live_cells
             .into_iter()
             .map(|cell| {
