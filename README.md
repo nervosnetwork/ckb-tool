@@ -1,16 +1,15 @@
-# ckb-contract-tool
+# ckb-tool
 
-Collect some helper methods for CKB contract testing.
+CKB tool set, include `ckb-tool-cli` and `ckb-tool` library.
 
-## Usage
+Currently, ckb-tool only supposed used in the testnet or local dev chain.
 
-``` rust
-let mut binary = Vec::new();
-File::open("my-contract-binary").unwrap().read_to_end(&mut binary).expect("read contract binary");
-let binary = Bytes::from(binary);
-let mut context = Context::default();
-context.deploy_contract(binary.clone());
-let tx = TxBuilder::default().lock_bin(binary).inject_and_build(&mut context).expect("build tx");
-let verify_result = context.verify_tx(&tx, 500000u64);
-verify_result.expect("pass verification");
-```
+## Features
+
+* Cells and dep groups deployment
+* Wallet library
+* Testing library
+
+## LICENSE
+
+MIT
