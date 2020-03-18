@@ -75,13 +75,17 @@ impl Deployment {
     pub fn process(&mut self, config: DeploymentConfig) -> DeploymentContext {
         let cells = &config.cells;
         let mut context = DeploymentContext::default();
-        let tx = self.build_cell_deploy_tx(&mut context, cells, config.lock.clone().into());
-        // send tx
-        self.wallet.send_transaction(&tx);
-        context.cells_deploy_tx_hash = tx.hash().unpack();
-        println!("send transaction {:#x}", context.cells_deploy_tx_hash);
-        // build map cell name -> out point
         let mut cells_map = HashMap::with_capacity(cells.len());
+        let cell_deploy_tx =
+            self.build_cell_deploy_tx(&mut context, cells, config.lock.clone().into());
+        if let Some(tx) = cell_deploy_tx.as_ref() {
+            // send tx
+            self.wallet.send_transaction(tx);
+            context.cells_deploy_tx_hash = tx.hash().unpack();
+            println!("send transaction {:#x}", context.cells_deploy_tx_hash);
+        }
+        let cell_deploy_tx_hash: Option<H256> = cell_deploy_tx.as_ref().map(|tx| tx.hash().unpack());
+        // build map cell name -> out point
         let mut i = 0;
         for cell in cells {
             match cell.location.to_owned() {
@@ -93,7 +97,15 @@ impl Deployment {
                     cells_map.insert(cell.name.to_owned(), (tx_hash, index));
                 }
                 CellLocation::File { .. } => {
-                    cells_map.insert(cell.name.to_owned(), (tx.hash().unpack(), i));
+                    cells_map.insert(
+                        cell.name.to_owned(),
+                        (
+                            cell_deploy_tx_hash
+                                .as_ref()
+                                .expect("no cell deploy tx").to_owned(),
+                            i,
+                        ),
+                    );
                     i += 1;
                 }
             }
@@ -117,7 +129,7 @@ impl Deployment {
         context: &mut DeploymentContext,
         cells: &[Cell],
         lock: packed::Script,
-    ) -> TransactionView {
+    ) -> Option<TransactionView> {
         let mut cell_data: Vec<Bytes> = Vec::new();
         let mut capacity = 0;
         for cell in cells {
@@ -135,6 +147,9 @@ impl Deployment {
                     capacity += data_len;
                 }
             }
+        }
+        if cell_data.is_empty() {
+            return None;
         }
         let live_cells = self
             .wallet
@@ -175,7 +190,8 @@ impl Deployment {
             .outputs_data(cell_data.pack())
             .build();
         let tx = self.wallet.complete_tx_lock_deps(&tx);
-        self.wallet.sign_tx(&tx)
+        self.wallet.sign_tx(&tx);
+        Some(tx)
     }
 
     fn build_dep_groups_deploy_tx(
