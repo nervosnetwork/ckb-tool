@@ -10,6 +10,10 @@ Currently, ckb-tool only supposed used in the testnet or local dev chain.
 * Wallet library
 * Testing library
 
+## Documentation
+
+* [CLI document](https://github.com/jjyr/ckb-tool/blob/master/cli/README.md)
+
 ## LICENSE
 
 MIT
