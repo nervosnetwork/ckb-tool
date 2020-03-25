@@ -190,7 +190,7 @@ impl Deployment {
             .outputs_data(cell_data.pack())
             .build();
         let tx = self.wallet.complete_tx_lock_deps(&tx);
-        self.wallet.sign_tx(&tx);
+        let tx = self.wallet.sign_tx(&tx);
         Some(tx)
     }
 
