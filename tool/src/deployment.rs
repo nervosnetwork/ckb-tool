@@ -84,7 +84,8 @@ impl Deployment {
             context.cells_deploy_tx_hash = tx.hash().unpack();
             println!("send transaction {:#x}", context.cells_deploy_tx_hash);
         }
-        let cell_deploy_tx_hash: Option<H256> = cell_deploy_tx.as_ref().map(|tx| tx.hash().unpack());
+        let cell_deploy_tx_hash: Option<H256> =
+            cell_deploy_tx.as_ref().map(|tx| tx.hash().unpack());
         // build map cell name -> out point
         let mut i = 0;
         for cell in cells {
@@ -102,7 +103,8 @@ impl Deployment {
                         (
                             cell_deploy_tx_hash
                                 .as_ref()
-                                .expect("no cell deploy tx").to_owned(),
+                                .expect("no cell deploy tx")
+                                .to_owned(),
                             i,
                         ),
                     );

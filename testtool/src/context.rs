@@ -1,16 +1,26 @@
-use ckb_error::Error as CKBError;
-use ckb_script::{DataLoader, TransactionScriptsVerifier};
-use ckb_types::{
+use ckb_tool::ckb_error::Error as CKBError;
+use ckb_tool::ckb_script::{DataLoader, TransactionScriptsVerifier};
+use ckb_tool::ckb_types::{
     bytes::Bytes,
     core::{
         cell::{CellMeta, CellMetaBuilder, ResolvedTransaction},
-        BlockExt, Capacity, Cycle, EpochExt, HeaderView, TransactionView,
+        BlockExt, Capacity, Cycle, DepType, EpochExt, HeaderView, ScriptHashType, TransactionView,
     },
-    packed::{Byte32, CellOutput, OutPoint},
+    packed::{Byte32, CellDep, CellOutput, OutPoint, Script},
     prelude::*,
 };
 use rand::{thread_rng, Rng};
-use std::collections::HashMap;
+use std::collections::{HashMap, HashSet};
+
+pub fn random_hash() -> Byte32 {
+    let mut rng = thread_rng();
+    let mut buf = [0u8; 32];
+    rng.fill(&mut buf);
+    buf.pack()
+}
+pub fn random_out_point() -> OutPoint {
+    OutPoint::new_builder().tx_hash(random_hash()).build()
+}
 
 #[derive(Default)]
 pub struct Context {
@@ -54,7 +64,71 @@ impl Context {
         self.cells.get(out_point).cloned()
     }
 
-    pub fn build_resolved_tx(&self, tx: &TransactionView) -> ResolvedTransaction {
+    /// find contract from out_point
+    pub fn get_script(&mut self, out_point: &OutPoint) -> Option<Script> {
+        let (_, contract_data) = self.cells.get(out_point)?;
+        let data_hash = CellOutput::calc_data_hash(contract_data);
+        Some(
+            Script::new_builder()
+                .code_hash(data_hash)
+                .hash_type(ScriptHashType::Data.into())
+                .build(),
+        )
+    }
+
+    /// create a cell with random out_point
+    pub fn create_cell(&mut self, cell: CellOutput, data: Bytes) -> OutPoint {
+        let out_point = random_out_point();
+        self.cells.insert(out_point.clone(), (cell, data));
+        out_point
+    }
+
+    fn find_cell_dep_for_script(&self, script: &Script) -> CellDep {
+        if script.hash_type() != ScriptHashType::Data.into() {
+            panic!("do not support hash_type {} yet", script.hash_type());
+        }
+
+        let out_point = self
+            .get_contract_out_point(&script.code_hash())
+            .expect("find contract out point");
+        CellDep::new_builder()
+            .out_point(out_point)
+            .dep_type(DepType::Code.into())
+            .build()
+    }
+
+    /// complete cell deps for a transaction
+    pub fn complete_tx(&mut self, tx: TransactionView) -> TransactionView {
+        let mut cell_deps: HashSet<CellDep> = HashSet::new();
+        for i in tx.input_pts_iter() {
+            if let Some((cell, _data)) = self.cells.get(&i) {
+                let dep = self.find_cell_dep_for_script(&cell.lock());
+                cell_deps.insert(dep);
+
+                if let Some(script) = cell.type_().to_opt() {
+                    let dep = self.find_cell_dep_for_script(&script);
+                    cell_deps.insert(dep);
+                }
+            }
+        }
+
+        for (cell, _data) in tx.outputs_with_data_iter() {
+            if let Some(script) = cell.type_().to_opt() {
+                let dep = self.find_cell_dep_for_script(&script);
+                cell_deps.insert(dep);
+            }
+        }
+
+        for cell_dep in tx.cell_deps_iter() {
+            cell_deps.insert(cell_dep);
+        }
+
+        tx.as_advanced_builder()
+            .cell_deps(cell_deps.into_iter().collect::<Vec<_>>().pack())
+            .build()
+    }
+
+    fn build_resolved_tx(&self, tx: &TransactionView) -> ResolvedTransaction {
         let previous_out_point = tx
             .inputs()
             .get(0)
