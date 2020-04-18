@@ -3,6 +3,7 @@ pub mod rpc_client;
 pub mod wallet;
 
 // re-exports
+pub use ckb_chain_spec;
 pub use ckb_crypto;
 pub use ckb_error;
 pub use ckb_hash;
