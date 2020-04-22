@@ -7,7 +7,7 @@ use ckb_jsonrpc_types::{
 };
 use ckb_types::core::BlockNumber as CoreBlockNumber;
 use ckb_types::{packed::Byte32, prelude::*, H256};
-use jsonrpc_client::*;
+use simple_jsonrpc_client::*;
 
 jsonrpc!(pub struct Rpc {
     pub fn get_block(&self, _hash: H256) -> Option<BlockView>;
