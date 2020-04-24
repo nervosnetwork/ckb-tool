@@ -88,7 +88,7 @@ impl RpcClient {
         }
     }
 
-    fn inner(&self) -> &Rpc {
+    pub fn inner(&self) -> &Rpc {
         &self.rpc
     }
 
@@ -103,6 +103,12 @@ impl RpcClient {
             .send_transaction(tx)
             .expect("rpc call send_transaction")
             .pack()
+    }
+
+    pub fn get_transaction(&self, tx_hash: H256) -> Option<TransactionWithStatus> {
+        self.inner()
+            .get_transaction(tx_hash)
+            .expect("rpc call get_transaction")
     }
 
     pub fn get_live_cells_by_lock_hash(
@@ -121,6 +127,7 @@ impl RpcClient {
             )
             .expect("rpc call get_live_cells_by_lock_hash")
     }
+
     pub fn get_transactions_by_lock_hash(
         &self,
         lock_hash: Byte32,

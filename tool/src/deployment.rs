@@ -68,7 +68,7 @@ pub struct Deployment {
 impl Deployment {
     pub fn new(wallet: Wallet) -> Self {
         // TODO optimize tx fee
-        let tx_fee = Capacity::bytes(100).expect("fee");
+        let tx_fee = Capacity::bytes(1000).expect("fee");
         Deployment { wallet, tx_fee }
     }
 
