@@ -1,18 +1,11 @@
 # ckb-tool
 
-CKB tool set, include `ckb-tool-cli` and `ckb-tool` library.
-
-Currently, ckb-tool only supposed used in the testnet or local dev chain.
+CKB tool set.
 
 ## Features
 
-* Cells and dep groups deployment
-* Wallet library
+* Re-exported CKB libraries
 * Testing library
-
-## Documentation
-
-* [CLI document](https://github.com/jjyr/ckb-tool/blob/master/cli/README.md)
 
 ## LICENSE
 

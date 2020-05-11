@@ -1,4 +1,3 @@
-pub mod deployment;
 pub mod rpc_client;
 pub mod wallet;
 
