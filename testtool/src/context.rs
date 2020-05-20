@@ -64,14 +64,15 @@ impl Context {
         self.cells.get(out_point).cloned()
     }
 
-    /// find contract from out_point
-    pub fn get_script(&mut self, out_point: &OutPoint) -> Option<Script> {
+    /// build script with out_point
+    pub fn build_script(&mut self, out_point: &OutPoint, args: Bytes) -> Option<Script> {
         let (_, contract_data) = self.cells.get(out_point)?;
         let data_hash = CellOutput::calc_data_hash(contract_data);
         Some(
             Script::new_builder()
                 .code_hash(data_hash)
                 .hash_type(ScriptHashType::Data.into())
+                .args(args.pack())
                 .build(),
         )
     }

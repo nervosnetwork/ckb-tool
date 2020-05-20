@@ -84,7 +84,7 @@ fn test_sighash_all_unlock() {
     let secp256k1_data_out_point = context.deploy_contract(secp256k1_data_bin.to_vec().into());
     let lock_out_point = context.deploy_contract(secp256k1_sighash_all_bin.to_vec().into());
     let lock_script = context
-        .get_script(&lock_out_point)
+        .build_script(&lock_out_point, Default::default())
         .expect("script")
         .as_builder()
         .args(pubkey_hash.to_vec().pack())
