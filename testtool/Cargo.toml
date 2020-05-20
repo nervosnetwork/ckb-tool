@@ -10,6 +10,7 @@ edition = "2018"
 ckb-always-success-script = "0.0.1"
 ckb-tool = { path = "../tool" }
 rand = "0.7"
+lazy_static = "1.4"
 
 [dev-dependencies]
 ckb-system-scripts = "0.5"

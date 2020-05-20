@@ -417,6 +417,7 @@ dependencies = [
  "ckb-always-success-script",
  "ckb-system-scripts",
  "ckb-tool",
+ "lazy_static",
  "rand 0.7.3",
 ]
 
