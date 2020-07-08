@@ -7,15 +7,15 @@ edition = "2018"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-ckb-chain-spec = { git = "https://github.com/nervosnetwork/ckb", tag = "v0.34.1" }
-ckb-types = { git = "https://github.com/nervosnetwork/ckb", tag = "v0.34.1" }
-ckb-error = { git = "https://github.com/nervosnetwork/ckb", tag = "v0.34.1" }
-ckb-script = { git = "https://github.com/nervosnetwork/ckb", tag = "v0.34.1" }
-ckb-hash = { git = "https://github.com/nervosnetwork/ckb", tag = "v0.34.1" }
-ckb-jsonrpc-types = { git = "https://github.com/nervosnetwork/ckb", tag = "v0.34.1" }
-ckb-crypto = { git = "https://github.com/nervosnetwork/ckb", tag = "v0.34.1" }
-ckb-resource = { git = "https://github.com/nervosnetwork/ckb", tag = "v0.34.1" }
-ckb-verification = { git = "https://github.com/nervosnetwork/ckb", tag = "v0.34.1" }
+ckb-chain-spec = { git = "https://github.com/jjyr/ckb", branch = "vm-trace-logging" }
+ckb-types = { git = "https://github.com/jjyr/ckb", branch = "vm-trace-logging" }
+ckb-error = { git = "https://github.com/jjyr/ckb", branch = "vm-trace-logging" }
+ckb-script = { git = "https://github.com/jjyr/ckb", branch = "vm-trace-logging" }
+ckb-hash = { git = "https://github.com/jjyr/ckb", branch = "vm-trace-logging" }
+ckb-jsonrpc-types = { git = "https://github.com/jjyr/ckb", branch = "vm-trace-logging" }
+ckb-crypto = { git = "https://github.com/jjyr/ckb", branch = "vm-trace-logging" }
+ckb-resource = { git = "https://github.com/jjyr/ckb", branch = "vm-trace-logging" }
+ckb-verification = { git = "https://github.com/jjyr/ckb", branch = "vm-trace-logging" }
 simple-jsonrpc-client = "0.1"
 serde_json = "1.0"
 serde = "1.0"

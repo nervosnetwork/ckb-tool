@@ -1,9 +1,8 @@
 use ckb_jsonrpc_types::{
     Alert, BannedAddr, Block, BlockNumber, BlockReward, BlockTemplate, BlockView, Capacity,
     CellOutputWithOutPoint, CellTransaction, CellWithStatus, ChainInfo, Cycle, DryRunResult,
-    EpochNumber, EpochView, EstimateResult, HeaderView, LiveCell, LocalNode, LockHashIndexState,
-    OutPoint, PeerState, RemoteNode, Timestamp, Transaction, TransactionWithStatus, TxPoolInfo,
-    Uint64, Version,
+    EpochNumber, EpochView, EstimateResult, HeaderView, LiveCell, LockHashIndexState, OutPoint,
+    PeerState, Timestamp, Transaction, TransactionWithStatus, TxPoolInfo, Uint64, Version,
 };
 use ckb_types::core::BlockNumber as CoreBlockNumber;
 use ckb_types::{packed::Byte32, prelude::*, H256};
@@ -29,8 +28,6 @@ jsonrpc!(pub struct Rpc {
     pub fn get_current_epoch(&self) -> EpochView;
     pub fn get_epoch_by_number(&self, number: EpochNumber) -> Option<EpochView>;
 
-    pub fn local_node_info(&self) -> LocalNode;
-    pub fn get_peers(&self) -> Vec<RemoteNode>;
     pub fn get_banned_addresses(&self) -> Vec<BannedAddr>;
     pub fn set_ban(
         &self,
