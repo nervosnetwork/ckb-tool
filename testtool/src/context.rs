@@ -130,11 +130,20 @@ impl Context {
     }
 
     fn build_resolved_tx(&self, tx: &TransactionView) -> ResolvedTransaction {
-        let previous_out_point = tx
+        let input_cells = tx
             .inputs()
-            .get(0)
-            .expect("should have at least one input")
-            .previous_output();
+            .into_iter()
+            .map(|input| {
+                let previous_out_point = input.previous_output();
+                let (input_output, input_data) = self.cells.get(&previous_out_point).unwrap();
+                CellMetaBuilder::from_cell_output(
+                    input_output.to_owned(),
+                    input_data.to_vec().into(),
+                )
+                .out_point(previous_out_point)
+                .build()
+            })
+            .collect();
         let resolved_cell_deps = tx
             .cell_deps()
             .into_iter()
@@ -145,15 +154,10 @@ impl Context {
                     .build()
             })
             .collect();
-        let (input_output, input_data) = self.cells.get(&previous_out_point).unwrap();
-        let input_cell =
-            CellMetaBuilder::from_cell_output(input_output.to_owned(), input_data.to_vec().into())
-                .out_point(previous_out_point)
-                .build();
         ResolvedTransaction {
             transaction: tx.clone(),
             resolved_cell_deps,
-            resolved_inputs: vec![input_cell],
+            resolved_inputs: input_cells,
             resolved_dep_groups: vec![],
         }
     }
