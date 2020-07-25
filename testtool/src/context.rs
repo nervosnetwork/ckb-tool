@@ -1,3 +1,4 @@
+use crate::tx_verifier::OutputsDataVerifier;
 use ckb_tool::ckb_error::Error as CKBError;
 use ckb_tool::ckb_script::{DataLoader, TransactionScriptsVerifier};
 use ckb_tool::ckb_types::{
@@ -162,7 +163,14 @@ impl Context {
         }
     }
 
+    // check format and consensus rules
+    fn verify_tx_consensus(&self, tx: &TransactionView) -> Result<(), CKBError> {
+        OutputsDataVerifier::new(tx).verify()?;
+        Ok(())
+    }
+
     pub fn verify_tx(&self, tx: &TransactionView, max_cycles: u64) -> Result<Cycle, CKBError> {
+        self.verify_tx_consensus(tx)?;
         let resolved_tx = self.build_resolved_tx(tx);
         let mut verifier = TransactionScriptsVerifier::new(&resolved_tx, self);
         verifier.set_debug_printer(|_id, msg| {

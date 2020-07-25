@@ -10,6 +10,7 @@ pub use ckb_jsonrpc_types;
 pub use ckb_script::{self, DataLoader};
 pub use ckb_types;
 pub use ckb_types::bytes;
+pub use ckb_verification;
 pub use faster_hex;
 
 pub fn calc_data_hash(data: &[u8]) -> ckb_types::packed::Byte32 {
