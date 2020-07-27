@@ -126,6 +126,7 @@ impl Context {
         }
 
         tx.as_advanced_builder()
+            .set_cell_deps(Vec::new())
             .cell_deps(cell_deps.into_iter().collect::<Vec<_>>().pack())
             .build()
     }
