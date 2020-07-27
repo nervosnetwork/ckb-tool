@@ -28,13 +28,18 @@ pub struct Context {
     pub cells: HashMap<OutPoint, (CellOutput, Bytes)>,
     pub headers: HashMap<Byte32, HeaderView>,
     pub epoches: HashMap<Byte32, EpochExt>,
-    pub contracts: HashMap<Byte32, OutPoint>,
+    pub cells_by_data_hash: HashMap<Byte32, OutPoint>,
 }
 
 impl Context {
+    #[deprecated(since = "0.1.1", note = "Please use the deploy_cell function instead")]
     pub fn deploy_contract(&mut self, data: Bytes) -> OutPoint {
+        self.deploy_cell(data)
+    }
+
+    pub fn deploy_cell(&mut self, data: Bytes) -> OutPoint {
         let data_hash = CellOutput::calc_data_hash(&data);
-        if let Some(out_point) = self.contracts.get(&data_hash) {
+        if let Some(out_point) = self.cells_by_data_hash.get(&data_hash) {
             // contract has been deployed
             return out_point.to_owned();
         }
@@ -49,16 +54,44 @@ impl Context {
             .capacity(Capacity::bytes(data.len()).expect("script capacity").pack())
             .build();
         self.cells.insert(out_point.clone(), (cell, data.into()));
-        self.contracts.insert(data_hash, out_point.clone());
+        self.cells_by_data_hash.insert(data_hash, out_point.clone());
         out_point
     }
 
+    #[deprecated(
+        since = "0.1.1",
+        note = "Please use the get_cell_by_data_hash function instead"
+    )]
     pub fn get_contract_out_point(&self, data_hash: &Byte32) -> Option<OutPoint> {
-        self.contracts.get(data_hash).cloned()
+        self.get_cell_by_data_hash(data_hash)
     }
 
-    pub fn insert_cell(&mut self, out_point: OutPoint, cell: CellOutput, data: Bytes) {
+    pub fn get_cell_by_data_hash(&self, data_hash: &Byte32) -> Option<OutPoint> {
+        self.cells_by_data_hash.get(data_hash).cloned()
+    }
+
+    /// create a cell with random out_point
+    pub fn create_cell(&mut self, cell: CellOutput, data: Bytes) -> OutPoint {
+        let out_point = random_out_point();
+        self.create_cell_with_out_point(out_point.clone(), cell, data);
+        out_point
+    }
+
+    pub fn create_cell_with_out_point(
+        &mut self,
+        out_point: OutPoint,
+        cell: CellOutput,
+        data: Bytes,
+    ) {
         self.cells.insert(out_point, (cell, data));
+    }
+
+    #[deprecated(
+        since = "0.1.1",
+        note = "Please use the create_cell_with_out_point function instead"
+    )]
+    pub fn insert_cell(&mut self, out_point: OutPoint, cell: CellOutput, data: Bytes) {
+        self.create_cell_with_out_point(out_point, cell, data)
     }
 
     pub fn get_cell(&self, out_point: &OutPoint) -> Option<(CellOutput, Bytes)> {
@@ -78,20 +111,13 @@ impl Context {
         )
     }
 
-    /// create a cell with random out_point
-    pub fn create_cell(&mut self, cell: CellOutput, data: Bytes) -> OutPoint {
-        let out_point = random_out_point();
-        self.cells.insert(out_point.clone(), (cell, data));
-        out_point
-    }
-
     fn find_cell_dep_for_script(&self, script: &Script) -> CellDep {
         if script.hash_type() != ScriptHashType::Data.into() {
             panic!("do not support hash_type {} yet", script.hash_type());
         }
 
         let out_point = self
-            .get_contract_out_point(&script.code_hash())
+            .get_cell_by_data_hash(&script.code_hash())
             .expect("find contract out point");
         CellDep::new_builder()
             .out_point(out_point)

@@ -81,8 +81,8 @@ fn test_sighash_all_unlock() {
     let secp256k1_sighash_all_bin = BUNDLED_CELL
         .get("specs/cells/secp256k1_blake160_sighash_all")
         .unwrap();
-    let secp256k1_data_out_point = context.deploy_contract(secp256k1_data_bin.to_vec().into());
-    let lock_out_point = context.deploy_contract(secp256k1_sighash_all_bin.to_vec().into());
+    let secp256k1_data_out_point = context.deploy_cell(secp256k1_data_bin.to_vec().into());
+    let lock_out_point = context.deploy_cell(secp256k1_sighash_all_bin.to_vec().into());
     let lock_script = context
         .build_script(&lock_out_point, Default::default())
         .expect("script")
