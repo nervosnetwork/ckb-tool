@@ -1,0 +1,1 @@
+initSidebarItems({"enum":[["Direction",""],["IteratorMode",""]],"struct":[["DBIter","An iterator over a database or column family, with specifiable ranges and direction."]],"trait":[["DBIterator",""]],"type":[["DBIterItem",""]]});

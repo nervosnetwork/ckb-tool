@@ -1,0 +1,1 @@
+initSidebarItems({"enum":[["Error",""]],"struct":[["Generator",""],["Privkey",""],["Pubkey",""],["SECP256K1",""],["Signature",""]],"type":[["Message",""]]});

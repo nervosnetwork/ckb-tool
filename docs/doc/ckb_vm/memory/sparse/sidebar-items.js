@@ -1,0 +1,1 @@
+initSidebarItems({"struct":[["SparseMemory","A sparse flat memory implementation, it allocates pages only when requested, but besides that, it does not permission checking."]]});

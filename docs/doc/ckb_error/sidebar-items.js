@@ -1,0 +1,1 @@
+initSidebarItems({"enum":[["ErrorKind",""],["InternalErrorKind",""]],"macro":[["assert_error_eq","Compare two errors"],["impl_error_conversion_with_adaptor",""],["impl_error_conversion_with_kind",""]],"mod":[["util",""]],"struct":[["Error",""],["InternalError",""]]});

@@ -1,0 +1,1 @@
+initSidebarItems({"fn":[["get_commit_date",""],["get_commit_describe",""]],"struct":[["Version",""]]});

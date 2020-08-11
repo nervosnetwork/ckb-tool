@@ -1,0 +1,3 @@
+(function() {var implementors = {};
+implementors["ckb_verification"] = [{"text":"impl&lt;'a, CS:&nbsp;<a class=\"trait\" href=\"ckb_store/store/trait.ChainStore.html\" title=\"trait ckb_store::store::ChainStore\">ChainStore</a>&lt;'a&gt;&gt; <a class=\"trait\" href=\"ckb_types/core/cell/trait.HeaderChecker.html\" title=\"trait ckb_types::core::cell::HeaderChecker\">HeaderChecker</a> for <a class=\"struct\" href=\"ckb_verification/struct.VerifyContext.html\" title=\"struct ckb_verification::VerifyContext\">VerifyContext</a>&lt;'a, CS&gt;","synthetic":false,"types":["ckb_verification::contextual_block_verifier::VerifyContext"]}];
+if (window.register_implementors) {window.register_implementors(implementors);} else {window.pending_implementors = implementors;}})()

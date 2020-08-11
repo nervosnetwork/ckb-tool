@@ -1,0 +1,1 @@
+initSidebarItems({"enum":[["Error",""]],"macro":[["capacity_bytes",""]],"struct":[["Capacity",""],["Ratio",""]],"trait":[["AsCapacity",""]],"type":[["Result",""]]});

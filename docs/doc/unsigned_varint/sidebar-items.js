@@ -1,0 +1,1 @@
+initSidebarItems({"mod":[["decode","Basic unsigned-varint decoding."],["encode","Basic unsigned-varint encoding."],["io","Decode using [`std::io::Read`] types."]]});

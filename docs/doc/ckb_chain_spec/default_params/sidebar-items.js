@@ -1,0 +1,1 @@
+initSidebarItems({"fn":[["cellbase_maturity",""],["epoch_duration_target",""],["genesis_epoch_length",""],["initial_primary_epoch_reward",""],["max_block_bytes",""],["max_block_cycles",""],["primary_epoch_reward_halving_interval",""],["secondary_epoch_reward",""]]});

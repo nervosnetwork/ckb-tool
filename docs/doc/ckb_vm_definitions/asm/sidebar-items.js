@@ -1,0 +1,1 @@
+initSidebarItems({"constant":[["RET_DECODE_TRACE",""],["RET_DYNAMIC_JUMP",""],["RET_EBREAK",""],["RET_ECALL",""],["RET_INVALID_PERMISSION",""],["RET_MAX_CYCLES_EXCEEDED",""],["RET_OUT_OF_BOUND",""],["TRACE_ITEM_LENGTH",""],["TRACE_SIZE",""]],"fn":[["calculate_slot",""]],"struct":[["AsmCoreMachine",""],["Trace",""]]});

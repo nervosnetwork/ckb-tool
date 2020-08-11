@@ -1,0 +1,1 @@
+initSidebarItems({"constant":[["MAX_BLOCK_BYTES",""],["TWO_IN_TWO_OUT_BYTES",""],["TWO_IN_TWO_OUT_CYCLES",""],["TYPE_ID_CODE_HASH",""]],"fn":[["build_genesis_dao_data",""],["build_genesis_epoch_ext",""]],"struct":[["Consensus",""],["ConsensusBuilder",""],["ProposalWindow",""]]});

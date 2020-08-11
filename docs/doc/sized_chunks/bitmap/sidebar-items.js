@@ -1,0 +1,1 @@
+initSidebarItems({"struct":[["Bitmap","A compact array of bits."],["Iter",""]]});

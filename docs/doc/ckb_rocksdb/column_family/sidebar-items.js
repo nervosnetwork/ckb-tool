@@ -1,0 +1,1 @@
+initSidebarItems({"struct":[["ColumnFamilyDescriptor","A descriptor for a RocksDB column family."]]});

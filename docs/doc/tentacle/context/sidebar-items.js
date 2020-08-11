@@ -1,0 +1,1 @@
+initSidebarItems({"struct":[["ProtocolContext","Protocol handle context"],["ProtocolContextMutRef","Protocol handle context contain session context"],["ServiceContext","The Service runtime can send some instructions to the inside of the handle. This is the sending channel."],["SessionContext","Session context, contains basic information about the current connection"]]});

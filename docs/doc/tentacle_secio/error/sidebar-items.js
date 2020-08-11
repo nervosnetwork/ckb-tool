@@ -1,0 +1,1 @@
+initSidebarItems({"enum":[["SecioError","Error at the SECIO layer communication."]]});

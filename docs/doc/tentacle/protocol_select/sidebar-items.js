@@ -1,0 +1,1 @@
+initSidebarItems({"fn":[["select_version","Choose the highest version of the two sides, assume that slices are sorted"]],"struct":[["ProtocolInfo","Protocol Info"]],"type":[["SelectFn","Function for protocol version select"]]});

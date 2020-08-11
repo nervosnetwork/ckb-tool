@@ -1,0 +1,1 @@
+initSidebarItems({"constant":[["DIFF_TWO",""]],"fn":[["compact_to_difficulty",""],["compact_to_target",""],["difficulty_to_compact",""],["merkle_root",""],["target_to_compact",""]],"struct":[["MergeByte32",""]],"type":[["CBMT",""]]});

@@ -1,0 +1,4 @@
+(function() {var implementors = {};
+implementors["ckb_crypto"] = [{"text":"impl <a class=\"trait\" href=\"lazy_static/trait.LazyStatic.html\" title=\"trait lazy_static::LazyStatic\">LazyStatic</a> for <a class=\"struct\" href=\"ckb_crypto/secp/struct.SECP256K1.html\" title=\"struct ckb_crypto::secp::SECP256K1\">SECP256K1</a>","synthetic":false,"types":["ckb_crypto::secp::SECP256K1"]}];
+implementors["ckb_testtool"] = [{"text":"impl <a class=\"trait\" href=\"lazy_static/trait.LazyStatic.html\" title=\"trait lazy_static::LazyStatic\">LazyStatic</a> for <a class=\"struct\" href=\"ckb_testtool/builtin/struct.ALWAYS_SUCCESS.html\" title=\"struct ckb_testtool::builtin::ALWAYS_SUCCESS\">ALWAYS_SUCCESS</a>","synthetic":false,"types":["ckb_testtool::builtin::ALWAYS_SUCCESS"]}];
+if (window.register_implementors) {window.register_implementors(implementors);} else {window.pending_implementors = implementors;}})()

@@ -1,0 +1,1 @@
+initSidebarItems({"fn":[["extract_peer_id","Get peer id from multiaddr"],["is_reachable","Check if the ip address is reachable. Copy from std::net::IpAddr::is_global"],["multiaddr_to_socketaddr","Change multiaddr to socketaddr"],["socketaddr_to_multiaddr","convert socket address to multiaddr"]],"mod":[["dns","This module create a `DNSResolver` future task to DNS resolver"]]});

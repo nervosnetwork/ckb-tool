@@ -1,0 +1,1 @@
+initSidebarItems({"constant":[["FLAG_EXECUTABLE",""],["FLAG_FREEZED",""],["FLAG_WRITABLE",""],["FLAG_WXORX_BIT",""]],"fn":[["check_permission",""],["memset",""],["round_page_down",""],["round_page_up",""]],"mod":[["flat",""],["sparse",""],["wxorx",""]],"trait":[["Memory",""]],"type":[["Page",""]]});

@@ -1,0 +1,56 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="API documentation for the Rust `attohttpc` crate."><meta name="keywords" content="rust, rustlang, rust-lang, attohttpc"><title>attohttpc - Rust</title><link rel="stylesheet" type="text/css" href="../normalize.css"><link rel="stylesheet" type="text/css" href="../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../dark.css"><link rel="stylesheet" type="text/css" href="../light.css" id="themeStyle"><script src="../storage.js"></script><noscript><link rel="stylesheet" href="../noscript.css"></noscript><link rel="shortcut icon" href="../favicon.ico"><style type="text/css">#crate-search{background-image:url("../down-arrow.svg");}</style></head><body class="rustdoc mod"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div><a href='../attohttpc/index.html'><div class='logo-container'><img src='../rust-logo.png' alt='logo'></div></a><p class='location'>Crate attohttpc</p><div class="sidebar-elems"><a id='all-types' href='all.html'><p>See all attohttpc's items</p></a><div class="block items"><ul><li><a href="#modules">Modules</a></li><li><a href="#structs">Structs</a></li><li><a href="#enums">Enums</a></li><li><a href="#functions">Functions</a></li><li><a href="#types">Type Definitions</a></li></ul></div><p class='location'></p><script>window.sidebarCurrent = {name: 'attohttpc', ty: 'mod', relpath: '../'};</script></div></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!"><img src="../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices"></div></div><script src="../theme.js"></script><nav class="sub"><form class="search-form"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" disabled autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><a id="settings-menu" href="../settings.html"><img src="../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><h1 class='fqn'><span class='out-of-band'><span id='render-detail'><a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">[<span class='inner'>&#x2212;</span>]</a></span><a class='srclink' href='../src/attohttpc/lib.rs.html#1-130' title='goto source code'>[src]</a></span><span class='in-band'>Crate <a class="mod" href=''>attohttpc</a></span></h1><div class='docblock'><p>This project's goal is to provide a lightweight and simple HTTP client for the Rust ecosystem. The intended use is for
+projects that have HTTP needs where performance is not critical or when HTTP is not the main purpose of the application.
+Note that the project still tries to perform well and avoid allocation where possible, but stays away from Rust's
+asynchronous stack to provide a crate that's as small as possible. Features are provided behind feature flags when
+possible to allow users to get just what they need.</p>
+<h1 id="quick-usage" class="section-header"><a href="#quick-usage">Quick usage</a></h1>
+<div class="example-wrap"><pre class="rust rust-example-rendered">
+<span class="kw">let</span> <span class="ident">obj</span> <span class="op">=</span> <span class="macro">json</span><span class="macro">!</span>({
+    <span class="string">&quot;hello&quot;</span>: <span class="string">&quot;world&quot;</span>,
+});
+
+<span class="kw">let</span> <span class="ident">resp</span> <span class="op">=</span> <span class="ident">attohttpc</span>::<span class="ident">post</span>(<span class="string">&quot;https://my-api.org/do/something&quot;</span>)
+    .<span class="ident">header</span>(<span class="string">&quot;X-My-Header&quot;</span>, <span class="string">&quot;foo&quot;</span>)   <span class="comment">// set a header for the request</span>
+    .<span class="ident">param</span>(<span class="string">&quot;qux&quot;</span>, <span class="string">&quot;baz&quot;</span>)            <span class="comment">// set a query parameter</span>
+    .<span class="ident">json</span>(<span class="kw-2">&amp;</span><span class="ident">obj</span>)<span class="question-mark">?</span>                    <span class="comment">// set the request body</span>
+    .<span class="ident">send</span>()<span class="question-mark">?</span>;                       <span class="comment">// send the request</span>
+
+<span class="comment">// Check if the status is a 2XX code.</span>
+<span class="kw">if</span> <span class="ident">resp</span>.<span class="ident">is_success</span>() {
+    <span class="comment">// Consume the response body as text and print it.</span>
+    <span class="macro">println</span><span class="macro">!</span>(<span class="string">&quot;{}&quot;</span>, <span class="ident">resp</span>.<span class="ident">text</span>()<span class="question-mark">?</span>);
+}</pre></div>
+<h1 id="features" class="section-header"><a href="#features">Features</a></h1>
+<ul>
+<li><code>charsets</code> support for decoding more text encodings than just UTF-8</li>
+<li><code>compress</code> support for decompressing response bodies (<strong>default</strong>)</li>
+<li><code>json</code> support for serialization and deserialization</li>
+<li><code>tls</code> support for tls connections (<strong>default</strong>)</li>
+</ul>
+<p>Check out the <a href="https://github.com/sbstp/attohttpc">repository</a> for more general information
+and examples.</p>
+</div><h2 id='modules' class='section-header'><a href="#modules">Modules</a></h2>
+<table><tr class='module-item'><td><a class="mod" href="header/index.html" title='attohttpc::header mod'>header</a></td><td class='docblock-short'><p>This module is a re-export of the <code>http</code> crate's <code>header</code> module.</p>
+</td></tr></table><h2 id='structs' class='section-header'><a href="#structs">Structs</a></h2>
+<table><tr class='module-item'><td><a class="struct" href="struct.Error.html" title='attohttpc::Error struct'>Error</a></td><td class='docblock-short'><p>A type that contains all the errors that can possibly occur while accessing an HTTP server.</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.Method.html" title='attohttpc::Method struct'>Method</a></td><td class='docblock-short'><p>The Request Method (VERB)</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.PreparedRequest.html" title='attohttpc::PreparedRequest struct'>PreparedRequest</a></td><td class='docblock-short'><p>Represents a request that's ready to be sent. You can inspect this object for information about the request.</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.RequestBuilder.html" title='attohttpc::RequestBuilder struct'>RequestBuilder</a></td><td class='docblock-short'><p><code>Request</code> is the main way of performing requests.</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.Response.html" title='attohttpc::Response struct'>Response</a></td><td class='docblock-short'><p><code>Response</code> represents a response returned by a server.</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.ResponseReader.html" title='attohttpc::ResponseReader struct'>ResponseReader</a></td><td class='docblock-short'><p>The <code>ResponseReader</code> is used to read the body of a response.</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.StatusCode.html" title='attohttpc::StatusCode struct'>StatusCode</a></td><td class='docblock-short'><p>An HTTP status code (<code>status-code</code> in RFC 7230 et al.).</p>
+</td></tr></table><h2 id='enums' class='section-header'><a href="#enums">Enums</a></h2>
+<table><tr class='module-item'><td><a class="enum" href="enum.ErrorKind.html" title='attohttpc::ErrorKind enum'>ErrorKind</a></td><td class='docblock-short'><p>Common errors that can occur during HTTP requests.</p>
+</td></tr><tr class='module-item'><td><a class="enum" href="enum.InvalidResponseKind.html" title='attohttpc::InvalidResponseKind enum'>InvalidResponseKind</a></td><td class='docblock-short'><p>Errors than can occur while parsing the response from the server.</p>
+</td></tr></table><h2 id='functions' class='section-header'><a href="#functions">Functions</a></h2>
+<table><tr class='module-item'><td><a class="fn" href="fn.delete.html" title='attohttpc::delete fn'>delete</a></td><td class='docblock-short'><p>Create a new <code>RequestBuilder</code> with the DELETE method.</p>
+</td></tr><tr class='module-item'><td><a class="fn" href="fn.get.html" title='attohttpc::get fn'>get</a></td><td class='docblock-short'><p>Create a new <code>RequestBuilder</code> with the GET method.</p>
+</td></tr><tr class='module-item'><td><a class="fn" href="fn.head.html" title='attohttpc::head fn'>head</a></td><td class='docblock-short'><p>Create a new <code>RequestBuilder</code> with the HEAD method.</p>
+</td></tr><tr class='module-item'><td><a class="fn" href="fn.options.html" title='attohttpc::options fn'>options</a></td><td class='docblock-short'><p>Create a new <code>RequestBuilder</code> with the OPTIONS method.</p>
+</td></tr><tr class='module-item'><td><a class="fn" href="fn.patch.html" title='attohttpc::patch fn'>patch</a></td><td class='docblock-short'><p>Create a new <code>RequestBuilder</code> with the PATCH method.</p>
+</td></tr><tr class='module-item'><td><a class="fn" href="fn.post.html" title='attohttpc::post fn'>post</a></td><td class='docblock-short'><p>Create a new <code>RequestBuilder</code> with the POST method.</p>
+</td></tr><tr class='module-item'><td><a class="fn" href="fn.put.html" title='attohttpc::put fn'>put</a></td><td class='docblock-short'><p>Create a new <code>RequestBuilder</code> with the PUT method.</p>
+</td></tr><tr class='module-item'><td><a class="fn" href="fn.trace.html" title='attohttpc::trace fn'>trace</a></td><td class='docblock-short'><p>Create a new <code>RequestBuilder</code> with the TRACE method.</p>
+</td></tr></table><h2 id='types' class='section-header'><a href="#types">Type Definitions</a></h2>
+<table><tr class='module-item'><td><a class="type" href="type.Result.html" title='attohttpc::Result type'>Result</a></td><td class='docblock-short'><p>Wrapper for the <code>Result</code> type with an <code>Error</code>.</p>
+</td></tr></table></section><section id="search" class="content hidden"></section><section class="footer"></section><script>window.rootPath = "../";window.currentCrate = "attohttpc";</script><script src="../aliases.js"></script><script src="../main.js"></script><script defer src="../search-index.js"></script></body></html>

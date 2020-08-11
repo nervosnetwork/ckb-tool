@@ -1,0 +1,1 @@
+initSidebarItems({"trait":[["Codec","A trait can define codec, just wrapper `Decoder` and `Encoder`"],["ServiceHandle","Service handle"],["ServiceProtocol","Service level protocol handle"],["SessionProtocol","Session level protocol handle"]]});

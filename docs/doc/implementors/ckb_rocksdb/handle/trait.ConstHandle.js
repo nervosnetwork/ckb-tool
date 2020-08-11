@@ -1,0 +1,3 @@
+(function() {var implementors = {};
+implementors["ckb_db"] = [{"text":"impl <a class=\"trait\" href=\"ckb_rocksdb/handle/trait.ConstHandle.html\" title=\"trait ckb_rocksdb::handle::ConstHandle\">ConstHandle</a>&lt;<a class=\"struct\" href=\"ckb_librocksdb_sys/bindings/struct.rocksdb_snapshot_t.html\" title=\"struct ckb_librocksdb_sys::bindings::rocksdb_snapshot_t\">rocksdb_snapshot_t</a>&gt; for <a class=\"struct\" href=\"ckb_db/snapshot/struct.RocksDBSnapshot.html\" title=\"struct ckb_db::snapshot::RocksDBSnapshot\">RocksDBSnapshot</a>","synthetic":false,"types":["ckb_db::snapshot::RocksDBSnapshot"]}];
+if (window.register_implementors) {window.register_implementors(implementors);} else {window.pending_implementors = implementors;}})()

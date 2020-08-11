@@ -1,0 +1,1 @@
+initSidebarItems({"struct":[["Error","The error type for I/O operations of the [`Read`], [`Write`], [`Seek`], and associated traits."]],"trait":[["Write","A trait for objects which are byte-oriented sinks."]],"type":[["Result","A specialized `Result` type for I/O operations."]]});

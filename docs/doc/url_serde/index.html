@@ -1,0 +1,41 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="API documentation for the Rust `url_serde` crate."><meta name="keywords" content="rust, rustlang, rust-lang, url_serde"><title>url_serde - Rust</title><link rel="stylesheet" type="text/css" href="../normalize.css"><link rel="stylesheet" type="text/css" href="../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../dark.css"><link rel="stylesheet" type="text/css" href="../light.css" id="themeStyle"><script src="../storage.js"></script><noscript><link rel="stylesheet" href="../noscript.css"></noscript><link rel="shortcut icon" href="../favicon.ico"><style type="text/css">#crate-search{background-image:url("../down-arrow.svg");}</style></head><body class="rustdoc mod"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div><a href='../url_serde/index.html'><div class='logo-container'><img src='../rust-logo.png' alt='logo'></div></a><p class='location'>Crate url_serde</p><div class="sidebar-elems"><a id='all-types' href='all.html'><p>See all url_serde's items</p></a><div class="block items"><ul><li><a href="#structs">Structs</a></li><li><a href="#functions">Functions</a></li><li><a href="#types">Type Definitions</a></li></ul></div><p class='location'></p><script>window.sidebarCurrent = {name: 'url_serde', ty: 'mod', relpath: '../'};</script></div></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!"><img src="../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices"></div></div><script src="../theme.js"></script><nav class="sub"><form class="search-form"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" disabled autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><a id="settings-menu" href="../settings.html"><img src="../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><h1 class='fqn'><span class='out-of-band'><span id='render-detail'><a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">[<span class='inner'>&#x2212;</span>]</a></span><a class='srclink' href='../src/url_serde/lib.rs.html#9-410' title='goto source code'>[src]</a></span><span class='in-band'>Crate <a class="mod" href=''>url_serde</a></span></h1><div class='docblock'><p>This crate provides wrappers and convenience functions to make rust-url
+and Serde work hand in hand.</p>
+<p>The supported types are:</p>
+<ul>
+<li><code>url::Url</code></li>
+</ul>
+<h1 id="how-do-i-use-a-data-type-with-a-url-member-with-serde" class="section-header"><a href="#how-do-i-use-a-data-type-with-a-url-member-with-serde">How do I use a data type with a <code>Url</code> member with Serde?</a></h1>
+<p>Use the serde attributes <code>deserialize_with</code> and <code>serialize_with</code>.</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered">
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">serde</span>::<span class="ident">Serialize</span>, <span class="ident">serde</span>::<span class="ident">Deserialize</span>)]</span>
+<span class="kw">struct</span> <span class="ident">MyStruct</span> {
+    <span class="attribute">#[<span class="ident">serde</span>(<span class="ident">with</span> <span class="op">=</span> <span class="string">&quot;url_serde&quot;</span>)]</span>
+    <span class="ident">url</span>: <span class="ident">Url</span>,
+}</pre></div>
+<h1 id="how-do-i-encode-a-url-value-with-serde_jsonto_string" class="section-header"><a href="#how-do-i-encode-a-url-value-with-serde_jsonto_string">How do I encode a <code>Url</code> value with <code>serde_json::to_string</code>?</a></h1>
+<p>Use the <code>Ser</code> wrapper.</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered">
+<span class="ident">serde_json</span>::<span class="ident">to_string</span>(<span class="kw-2">&amp;</span><span class="ident">Ser</span>::<span class="ident">new</span>(<span class="kw-2">&amp;</span><span class="ident">url</span>))</pre></div>
+<h1 id="how-do-i-decode-a-url-value-with-serde_jsonparse" class="section-header"><a href="#how-do-i-decode-a-url-value-with-serde_jsonparse">How do I decode a <code>Url</code> value with <code>serde_json::parse</code>?</a></h1>
+<p>Use the <code>De</code> wrapper.</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered">
+<span class="ident">serde_json</span>::<span class="ident">from_str</span>(<span class="string">r&quot;http:://www.rust-lang.org&quot;</span>).<span class="ident">map</span>(<span class="ident">De</span>::<span class="ident">into_inner</span>)</pre></div>
+<h1 id="how-do-i-send-url-values-as-part-of-an-ipc-channel" class="section-header"><a href="#how-do-i-send-url-values-as-part-of-an-ipc-channel">How do I send <code>Url</code> values as part of an IPC channel?</a></h1>
+<p>Use the <code>Serde</code> wrapper. It implements <code>Deref</code> and <code>DerefMut</code> for convenience.</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered">
+<span class="ident">ipc</span>::<span class="ident">channel</span>::<span class="op">&lt;</span><span class="ident">Serde</span><span class="op">&lt;</span><span class="ident">Url</span><span class="op">&gt;</span><span class="op">&gt;</span>()</pre></div>
+</div><h2 id='structs' class='section-header'><a href="#structs">Structs</a></h2>
+<table><tr class='module-item'><td><a class="struct" href="struct.De.html" title='url_serde::De struct'>De</a></td><td class='docblock-short'><p>A wrapper to deserialize <code>rust-url</code> types.</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.Ser.html" title='url_serde::Ser struct'>Ser</a></td><td class='docblock-short'><p>A wrapper to serialize <code>rust-url</code> types.</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.Serde.html" title='url_serde::Serde struct'>Serde</a></td><td class='docblock-short'><p>A convenience wrapper to be used as a type parameter, for example when
+a <code>Vec&lt;T&gt;</code> or an <code>HashMap&lt;K, V&gt;</code> need to be passed to serde.</p>
+</td></tr></table><h2 id='functions' class='section-header'><a href="#functions">Functions</a></h2>
+<table><tr class='module-item'><td><a class="fn" href="fn.deserialize.html" title='url_serde::deserialize fn'>deserialize</a></td><td class='docblock-short'><p>Deserialises a <code>T</code> value with a given deserializer.</p>
+</td></tr><tr class='module-item'><td><a class="fn" href="fn.serialize.html" title='url_serde::serialize fn'>serialize</a></td><td class='docblock-short'><p>Serialises <code>value</code> with a given serializer.</p>
+</td></tr></table><h2 id='types' class='section-header'><a href="#types">Type Definitions</a></h2>
+<table><tr class='module-item'><td><a class="type" href="type.SerdeUrl.html" title='url_serde::SerdeUrl type'>SerdeUrl</a></td><td class='docblock-short'><p>A convenience type alias for Serde<Url>.</p>
+</td></tr></table></section><section id="search" class="content hidden"></section><section class="footer"></section><script>window.rootPath = "../";window.currentCrate = "url_serde";</script><script src="../aliases.js"></script><script src="../main.js"></script><script defer src="../search-index.js"></script></body></html>
