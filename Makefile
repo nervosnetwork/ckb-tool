@@ -12,7 +12,7 @@ publish-doc:
 	make generate-doc
 	git add .
 	git commit -m "update doc" || true
-	git push -f upstream
+	git push -f origin
 	git checkout master
 	echo "done"
 
