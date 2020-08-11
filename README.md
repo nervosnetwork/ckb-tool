@@ -4,7 +4,7 @@ CKB tool set.
 
 ## Usage
 
-[Documentation](https://jjyr.github.io/ckb-testtool/riscv64imac-unknown-none-elf/doc/ckb_testtool/index.html)
+[Documentation](https://justjjy.com/ckb-tool/doc/ckb_testtool/)
 
 ## Features
 
