@@ -13,16 +13,20 @@ use ckb_tool::ckb_types::{
 use rand::{thread_rng, Rng};
 use std::collections::{HashMap, HashSet};
 
+/// Return a random hash
 pub fn random_hash() -> Byte32 {
     let mut rng = thread_rng();
     let mut buf = [0u8; 32];
     rng.fill(&mut buf);
     buf.pack()
 }
+
+/// Return a random OutPoint
 pub fn random_out_point() -> OutPoint {
     OutPoint::new_builder().tx_hash(random_hash()).build()
 }
 
+/// Verification Context
 #[derive(Default)]
 pub struct Context {
     pub cells: HashMap<OutPoint, (CellOutput, Bytes)>,
@@ -37,6 +41,8 @@ impl Context {
         self.deploy_cell(data)
     }
 
+    /// Deploy a cell
+    /// return the out-point of the cell
     pub fn deploy_cell(&mut self, data: Bytes) -> OutPoint {
         let data_hash = CellOutput::calc_data_hash(&data);
         if let Some(out_point) = self.cells_by_data_hash.get(&data_hash) {
@@ -66,17 +72,21 @@ impl Context {
         self.get_cell_by_data_hash(data_hash)
     }
 
+    /// Get the out-point of a cell by data_hash
+    /// the cell must has deployed to this context
     pub fn get_cell_by_data_hash(&self, data_hash: &Byte32) -> Option<OutPoint> {
         self.cells_by_data_hash.get(data_hash).cloned()
     }
 
-    /// create a cell with random out_point
+    /// Create a cell with data
+    /// return the out-point
     pub fn create_cell(&mut self, cell: CellOutput, data: Bytes) -> OutPoint {
         let out_point = random_out_point();
         self.create_cell_with_out_point(out_point.clone(), cell, data);
         out_point
     }
 
+    /// Create cell with specified out-point and cell data
     pub fn create_cell_with_out_point(
         &mut self,
         out_point: OutPoint,
@@ -94,11 +104,13 @@ impl Context {
         self.create_cell_with_out_point(out_point, cell, data)
     }
 
+    /// Get cell output and data by out-point
     pub fn get_cell(&self, out_point: &OutPoint) -> Option<(CellOutput, Bytes)> {
         self.cells.get(out_point).cloned()
     }
 
-    /// build script with out_point
+    /// Build script with out_point and args
+    /// return none if the out-point is not exist
     pub fn build_script(&mut self, out_point: &OutPoint, args: Bytes) -> Option<Script> {
         let (_, contract_data) = self.cells.get(out_point)?;
         let data_hash = CellOutput::calc_data_hash(contract_data);
@@ -125,7 +137,8 @@ impl Context {
             .build()
     }
 
-    /// complete cell deps for a transaction
+    /// Complete cell deps for a transaction
+    /// this function searches context cells; generate cell dep for referenced scripts.
     pub fn complete_tx(&mut self, tx: TransactionView) -> TransactionView {
         let mut cell_deps: HashSet<CellDep> = HashSet::new();
         for i in tx.input_pts_iter() {
@@ -196,6 +209,7 @@ impl Context {
         Ok(())
     }
 
+    /// Verify the transaction in CKB-VM
     pub fn verify_tx(&self, tx: &TransactionView, max_cycles: u64) -> Result<Cycle, CKBError> {
         self.verify_tx_consensus(tx)?;
         let resolved_tx = self.build_resolved_tx(tx);
