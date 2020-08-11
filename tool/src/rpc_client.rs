@@ -72,6 +72,7 @@ jsonrpc!(pub struct Rpc {
     pub fn estimate_fee_rate(&self, expect_confirm_blocks: Uint64) -> EstimateResult;
 });
 
+/// RpcClient
 pub struct RpcClient {
     rpc: Rpc,
 }
