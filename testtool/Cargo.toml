@@ -11,6 +11,7 @@ ckb-always-success-script = "0.0.1"
 ckb-tool = { path = "../tool" }
 rand = "0.7"
 lazy_static = "1.4"
+linked_hash_set = "0.1"
 
 [dev-dependencies]
 ckb-system-scripts = "0.5"

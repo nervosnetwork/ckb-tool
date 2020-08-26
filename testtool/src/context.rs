@@ -10,8 +10,9 @@ use ckb_tool::ckb_types::{
     packed::{Byte32, CellDep, CellOutput, OutPoint, Script},
     prelude::*,
 };
+use linked_hash_set::LinkedHashSet;
 use rand::{thread_rng, Rng};
-use std::collections::{HashMap, HashSet};
+use std::collections::HashMap;
 
 /// Return a random hash
 pub fn random_hash() -> Byte32 {
@@ -140,7 +141,12 @@ impl Context {
     /// Complete cell deps for a transaction
     /// this function searches context cells; generate cell dep for referenced scripts.
     pub fn complete_tx(&mut self, tx: TransactionView) -> TransactionView {
-        let mut cell_deps: HashSet<CellDep> = HashSet::new();
+        let mut cell_deps: LinkedHashSet<CellDep> = LinkedHashSet::new();
+
+        for cell_dep in tx.cell_deps_iter() {
+            cell_deps.insert(cell_dep);
+        }
+
         for i in tx.input_pts_iter() {
             if let Some((cell, _data)) = self.cells.get(&i) {
                 let dep = self.find_cell_dep_for_script(&cell.lock());
@@ -158,10 +164,6 @@ impl Context {
                 let dep = self.find_cell_dep_for_script(&script);
                 cell_deps.insert(dep);
             }
-        }
-
-        for cell_dep in tx.cell_deps_iter() {
-            cell_deps.insert(cell_dep);
         }
 
         tx.as_advanced_builder()

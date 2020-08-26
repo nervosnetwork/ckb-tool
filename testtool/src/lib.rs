@@ -17,10 +17,10 @@
 //!     prelude::*,
 //! };
 //! use std::fs;
-//! 
+//!
 //! // max cycles of verification
 //! const MAX_CYCLES: u64 = 10_000_000;
-//! 
+//!
 //! #[test]
 //! fn test_basic() {
 //!     // Init testing context
@@ -29,7 +29,7 @@
 //!
 //!     // deploy contract
 //!     let out_point = context.deploy_cell(contract_bin);
-//! 
+//!
 //!     // prepare scripts and cell dep
 //!     let lock_script = context
 //!         .build_script(&out_point, Default::default())
@@ -37,7 +37,7 @@
 //!     let lock_script_dep = CellDep::new_builder()
 //!         .out_point(out_point)
 //!         .build();
-//! 
+//!
 //!     // prepare input cell
 //!     let input_out_point = context.create_cell(
 //!         CellOutput::new_builder()
@@ -61,9 +61,9 @@
 //!             .lock(lock_script)
 //!             .build(),
 //!     ];
-//! 
+//!
 //!     let outputs_data = vec![Bytes::new(); 2];
-//! 
+//!
 //!     // build transaction
 //!     let tx = TransactionBuilder::default()
 //!         .input(input)
@@ -73,7 +73,7 @@
 //!         .build();
 //!
 //!     let tx = context.complete_tx(tx);
-//! 
+//!
 //!     // run
 //!     let cycles = context
 //!         .verify_tx(&tx, MAX_CYCLES)
