@@ -592,7 +592,7 @@ dependencies = [
 
 [[package]]
 name = "ckb-testtool"
-version = "0.1.2"
+version = "0.1.3"
 dependencies = [
  "ckb-always-success-script",
  "ckb-system-scripts",
@@ -604,7 +604,7 @@ dependencies = [
 
 [[package]]
 name = "ckb-tool"
-version = "0.1.2"
+version = "0.1.3"
 dependencies = [
  "ckb-chain-spec",
  "ckb-crypto",
