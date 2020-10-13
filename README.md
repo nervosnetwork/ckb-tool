@@ -4,7 +4,8 @@ CKB tool set.
 
 ## Usage
 
-[Documentation](https://justjjy.com/ckb-tool/doc/ckb_testtool/)
+* [ckb-tool](https://crates.io/ckb-tool)
+* [ckb-testtool](https://crates.io/ckb-testtool)
 
 ## Features
 

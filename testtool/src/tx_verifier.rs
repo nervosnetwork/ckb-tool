@@ -15,7 +15,10 @@ impl<'a> OutputsDataVerifier<'a> {
         let outputs_data_len = self.transaction.outputs_data().len();
 
         if outputs_len != outputs_data_len {
-            return Err(TransactionError::OutputsDataLengthMismatch);
+            return Err(TransactionError::OutputsDataLengthMismatch {
+                outputs_data_len,
+                outputs_len,
+            });
         }
         Ok(())
     }

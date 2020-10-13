@@ -1,11 +1,12 @@
 use crate::tx_verifier::OutputsDataVerifier;
 use ckb_tool::ckb_error::Error as CKBError;
-use ckb_tool::ckb_script::{DataLoader, TransactionScriptsVerifier};
+use ckb_tool::ckb_script::TransactionScriptsVerifier;
+use ckb_tool::ckb_traits::{CellDataProvider, HeaderProvider};
 use ckb_tool::ckb_types::{
     bytes::Bytes,
     core::{
         cell::{CellMeta, CellMetaBuilder, ResolvedTransaction},
-        BlockExt, Capacity, Cycle, DepType, EpochExt, HeaderView, ScriptHashType, TransactionView,
+        Capacity, Cycle, DepType, EpochExt, HeaderView, ScriptHashType, TransactionView,
     },
     packed::{Byte32, CellDep, CellOutput, OutPoint, Script},
     prelude::*,
@@ -223,33 +224,28 @@ impl Context {
     }
 }
 
-impl DataLoader for Context {
+impl CellDataProvider for Context {
     // load Cell Data
     fn load_cell_data(&self, cell: &CellMeta) -> Option<(Bytes, Byte32)> {
         cell.mem_cell_data
             .as_ref()
             .map(|(data, hash)| (Bytes::from(data.to_vec()), hash.to_owned()))
-            .or_else(|| {
-                self.cells.get(&cell.out_point).map(|(_, data)| {
-                    (
-                        Bytes::from(data.to_vec()),
-                        CellOutput::calc_data_hash(&data),
-                    )
-                })
-            })
-    }
-    // load BlockExt
-    fn get_block_ext(&self, _hash: &Byte32) -> Option<BlockExt> {
-        unreachable!()
+            .or_else(|| self.get_cell_data(&cell.out_point))
     }
 
+    fn get_cell_data(&self, out_point: &OutPoint) -> Option<(Bytes, Byte32)> {
+        self.cells.get(out_point).map(|(_, data)| {
+            (
+                Bytes::from(data.to_vec()),
+                CellOutput::calc_data_hash(&data),
+            )
+        })
+    }
+}
+
+impl HeaderProvider for Context {
     // load header
     fn get_header(&self, block_hash: &Byte32) -> Option<HeaderView> {
         self.headers.get(block_hash).cloned()
-    }
-
-    // load EpochExt
-    fn get_block_epoch(&self, block_hash: &Byte32) -> Option<EpochExt> {
-        self.epoches.get(block_hash).cloned()
     }
 }
