@@ -14,6 +14,7 @@ use ckb_tool::ckb_types::{
 use linked_hash_set::LinkedHashSet;
 use rand::{thread_rng, Rng};
 use std::collections::HashMap;
+use std::sync::{Arc, Mutex};
 
 /// Return a random hash
 pub fn random_hash() -> Byte32 {
@@ -28,6 +29,12 @@ pub fn random_out_point() -> OutPoint {
     OutPoint::new_builder().tx_hash(random_hash()).build()
 }
 
+#[derive(Debug, Clone, Eq, PartialEq)]
+pub struct Message {
+    pub id: Byte32,
+    pub message: String,
+}
+
 /// Verification Context
 #[derive(Default)]
 pub struct Context {
@@ -35,6 +42,8 @@ pub struct Context {
     pub headers: HashMap<Byte32, HeaderView>,
     pub epoches: HashMap<Byte32, EpochExt>,
     pub cells_by_data_hash: HashMap<Byte32, OutPoint>,
+    capture_debug: bool,
+    captured_messages: Arc<Mutex<Vec<Message>>>,
 }
 
 impl Context {
@@ -212,14 +221,39 @@ impl Context {
         Ok(())
     }
 
+    pub fn capture_debug(&self) -> bool {
+        self.capture_debug
+    }
+
+    /// Capture debug output, default value is false
+    pub fn set_capture_debug(&mut self, capture_debug: bool) {
+        self.capture_debug = capture_debug;
+    }
+
+    /// return captured messages
+    pub fn captured_messages(&self) -> Vec<Message> {
+        self.captured_messages.lock().unwrap().clone()
+    }
+
     /// Verify the transaction in CKB-VM
     pub fn verify_tx(&self, tx: &TransactionView, max_cycles: u64) -> Result<Cycle, CKBError> {
         self.verify_tx_consensus(tx)?;
         let resolved_tx = self.build_resolved_tx(tx);
         let mut verifier = TransactionScriptsVerifier::new(&resolved_tx, self);
-        verifier.set_debug_printer(|_id, msg| {
-            println!("[contract debug] {}", msg);
-        });
+        if self.capture_debug {
+            let captured_messages = self.captured_messages.clone();
+            verifier.set_debug_printer(move |id, message| {
+                let msg = Message {
+                    id: id.clone(),
+                    message: message.to_string(),
+                };
+                captured_messages.lock().unwrap().push(msg);
+            });
+        } else {
+            verifier.set_debug_printer(|_id, msg| {
+                println!("[contract debug] {}", msg);
+            });
+        }
         verifier.verify(max_cycles)
     }
 }
