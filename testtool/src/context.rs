@@ -6,7 +6,8 @@ use ckb_tool::ckb_types::{
     bytes::Bytes,
     core::{
         cell::{CellMeta, CellMetaBuilder, ResolvedTransaction},
-        Capacity, Cycle, DepType, EpochExt, HeaderView, ScriptHashType, TransactionView,
+        Capacity, Cycle, DepType, EpochExt, HeaderView, ScriptHashType, TransactionInfo,
+        TransactionView,
     },
     packed::{Byte32, CellDep, CellOutput, OutPoint, Script},
     prelude::*,
@@ -39,6 +40,7 @@ pub struct Message {
 #[derive(Default)]
 pub struct Context {
     pub cells: HashMap<OutPoint, (CellOutput, Bytes)>,
+    pub transaction_infos: HashMap<OutPoint, TransactionInfo>,
     pub headers: HashMap<Byte32, HeaderView>,
     pub epoches: HashMap<Byte32, EpochExt>,
     pub cells_by_data_hash: HashMap<Byte32, OutPoint>,
@@ -73,6 +75,29 @@ impl Context {
         self.cells.insert(out_point.clone(), (cell, data.into()));
         self.cells_by_data_hash.insert(data_hash, out_point.clone());
         out_point
+    }
+
+    /// Insert a block header into context
+    pub fn insert_header(&mut self, header: HeaderView) {
+        self.headers.insert(header.hash(), header);
+    }
+
+    /// Link a cell with a block
+    /// to make the load_header_by_cell syscalls works
+    pub fn link_cell_with_block(
+        &mut self,
+        out_point: OutPoint,
+        block_hash: Byte32,
+        tx_index: usize,
+    ) {
+        let header = self
+            .headers
+            .get(&block_hash)
+            .expect("can't find the header");
+        self.transaction_infos.insert(
+            out_point,
+            TransactionInfo::new(header.number(), header.epoch(), block_hash, tx_index),
+        );
     }
 
     #[deprecated(
@@ -189,12 +214,16 @@ impl Context {
             .map(|input| {
                 let previous_out_point = input.previous_output();
                 let (input_output, input_data) = self.cells.get(&previous_out_point).unwrap();
-                CellMetaBuilder::from_cell_output(
+                let tx_info_opt = self.transaction_infos.get(&previous_out_point);
+                let mut b = CellMetaBuilder::from_cell_output(
                     input_output.to_owned(),
                     input_data.to_vec().into(),
                 )
-                .out_point(previous_out_point)
-                .build()
+                .out_point(previous_out_point);
+                if let Some(tx_info) = tx_info_opt {
+                    b = b.transaction_info(tx_info.to_owned());
+                }
+                b.build()
             })
             .collect();
         let resolved_cell_deps = tx
@@ -202,9 +231,16 @@ impl Context {
             .into_iter()
             .map(|deps_out_point| {
                 let (dep_output, dep_data) = self.cells.get(&deps_out_point.out_point()).unwrap();
-                CellMetaBuilder::from_cell_output(dep_output.to_owned(), dep_data.to_vec().into())
-                    .out_point(deps_out_point.out_point())
-                    .build()
+                let tx_info_opt = self.transaction_infos.get(&deps_out_point.out_point());
+                let mut b = CellMetaBuilder::from_cell_output(
+                    dep_output.to_owned(),
+                    dep_data.to_vec().into(),
+                )
+                .out_point(deps_out_point.out_point());
+                if let Some(tx_info) = tx_info_opt {
+                    b = b.transaction_info(tx_info.to_owned());
+                }
+                b.build()
             })
             .collect();
         ResolvedTransaction {
