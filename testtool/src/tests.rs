@@ -9,8 +9,10 @@ use ckb_tool::ckb_types::{
     prelude::*,
     H256,
 };
+use std::fs;
 
 const MAX_CYCLES: u64 = 500_0000;
+const TEST_CONTRACT_PATH: &str = "../test-contract/build/debug/test-contract";
 
 fn blake160(data: &[u8]) -> [u8; 20] {
     let mut buf = [0u8; 20];
@@ -129,6 +131,86 @@ fn test_sighash_all_unlock() {
 
     // sign
     let tx = sign_tx(tx, &privkey);
+
+    // run
+    context
+        .verify_tx(&tx, MAX_CYCLES)
+        .expect("pass verification");
+}
+
+#[test]
+fn test_load_header() {
+    // deploy contract
+    let mut context = Context::default();
+    let test_contract_bin = fs::read(TEST_CONTRACT_PATH).unwrap();
+    let lock_out_point = context.deploy_cell(test_contract_bin.to_vec().into());
+    let lock_script = context
+        .build_script(&lock_out_point, Default::default())
+        .expect("script")
+        .as_builder()
+        .build();
+
+    // prepare cells
+    let input_out_point = context.create_cell(
+        CellOutput::new_builder()
+            .capacity(1000u64.pack())
+            .lock(lock_script.clone())
+            .build(),
+        Bytes::new(),
+    );
+    let input = CellInput::new_builder()
+        .previous_output(input_out_point.clone())
+        .build();
+
+    let dep_out_point = context.deploy_cell(Vec::new().into());
+    let dep_cell = CellDep::new_builder()
+        .out_point(dep_out_point.clone())
+        .build();
+
+    let outputs = vec![
+        CellOutput::new_builder()
+            .capacity(500u64.pack())
+            .lock(lock_script.clone())
+            .build(),
+        CellOutput::new_builder()
+            .capacity(500u64.pack())
+            .lock(lock_script)
+            .build(),
+    ];
+
+    let outputs_data = vec![Bytes::new(); 2];
+
+    // prepare headers
+    let h1 = Header::new_builder()
+        .raw(RawHeader::new_builder().number(1u64.pack()).build())
+        .build()
+        .into_view();
+    let h2 = Header::new_builder()
+        .raw(RawHeader::new_builder().number(2u64.pack()).build())
+        .build()
+        .into_view();
+    let h3 = Header::new_builder()
+        .raw(RawHeader::new_builder().number(3u64.pack()).build())
+        .build()
+        .into_view();
+
+    context.insert_header(h1.clone());
+    context.insert_header(h2.clone());
+    context.insert_header(h3.clone());
+    context.link_cell_with_block(input_out_point, h1.hash(), 0);
+    context.link_cell_with_block(dep_out_point, h2.hash(), 5);
+
+    // build transaction
+    let tx = TransactionBuilder::default()
+        .input(input)
+        .outputs(outputs)
+        .outputs_data(outputs_data.pack())
+        .cell_dep(dep_cell)
+        .header_dep(h3.hash())
+        .header_dep(h2.hash())
+        .header_dep(h1.hash())
+        .build();
+    let tx = context.complete_tx(tx);
 
     // run
     context
