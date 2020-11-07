@@ -612,11 +612,11 @@ dependencies = [
 
 [[package]]
 name = "ckb-testtool"
-version = "0.2.1"
+version = "0.2.2"
 dependencies = [
  "ckb-always-success-script",
  "ckb-system-scripts",
- "ckb-tool 0.2.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "ckb-tool 0.2.1",
  "lazy_static",
  "linked_hash_set",
  "rand 0.7.3",
@@ -625,6 +625,8 @@ dependencies = [
 [[package]]
 name = "ckb-tool"
 version = "0.2.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "b023b62632da969b393c0d0dbf8a38e68b5d99763110c74aa4218c715c981728"
 dependencies = [
  "ckb-chain-spec",
  "ckb-crypto",
@@ -645,9 +647,7 @@ dependencies = [
 
 [[package]]
 name = "ckb-tool"
-version = "0.2.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b023b62632da969b393c0d0dbf8a38e68b5d99763110c74aa4218c715c981728"
+version = "0.2.2"
 dependencies = [
  "ckb-chain-spec",
  "ckb-crypto",
