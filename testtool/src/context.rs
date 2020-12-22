@@ -147,16 +147,25 @@ impl Context {
 
     /// Build script with out_point and args
     /// return none if the out-point is not exist
-    pub fn build_script(&mut self, out_point: &OutPoint, args: Bytes) -> Option<Script> {
-        let (_, contract_data) = self.cells.get(out_point)?;
-        let data_hash = CellOutput::calc_data_hash(contract_data);
+    pub fn build_script(&mut self, out_point: &OutPoint, args: Bytes, hash_type: ScriptHashType) -> Option<Script> {
+        let (output, contract_data) = self.cells.get(out_point)?;
+        let code_hash = match hash_type {
+            ScriptHashType::Data => CellOutput::calc_data_hash(contract_data),
+            ScriptHashType::Type => {
+                if output.type_().is_none() {
+                    panic!("type script must be not null for script whose hash_type is type")
+                }
+                CellOutput::calc_data_hash(output.type_().as_slice())
+            }
+        };
         Some(
             Script::new_builder()
-                .code_hash(data_hash)
-                .hash_type(ScriptHashType::Data.into())
+                .code_hash(code_hash)
+                .hash_type(hash_type.into())
                 .args(args.pack())
                 .build(),
         )
+        
     }
 
     fn find_cell_dep_for_script(&self, script: &Script) -> CellDep {
@@ -170,6 +179,13 @@ impl Context {
         CellDep::new_builder()
             .out_point(out_point)
             .dep_type(DepType::Code.into())
+            .build()
+    }
+
+    fn create_cell_dep_with_out_point(&self, out_point: OutPoint, dep_type: DepType) -> CellDep {
+        CellDep::new_builder()
+            .out_point(out_point)
+            .dep_type(dep_type.into())
             .build()
     }
 
