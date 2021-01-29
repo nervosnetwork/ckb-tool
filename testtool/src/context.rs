@@ -1,4 +1,5 @@
 use crate::tx_verifier::OutputsDataVerifier;
+use ckb_tool::ckb_chain_spec::consensus::TYPE_ID_CODE_HASH;
 use ckb_tool::ckb_error::Error as CKBError;
 use ckb_tool::ckb_script::TransactionScriptsVerifier;
 use ckb_tool::ckb_traits::{CellDataProvider, HeaderProvider};
@@ -188,16 +189,24 @@ impl Context {
                 cell_deps.insert(dep);
 
                 if let Some(script) = cell.type_().to_opt() {
-                    let dep = self.find_cell_dep_for_script(&script);
-                    cell_deps.insert(dep);
+                    if script.code_hash() != TYPE_ID_CODE_HASH.pack()
+                        || script.hash_type() != ScriptHashType::Type.into()
+                    {
+                        let dep = self.find_cell_dep_for_script(&script);
+                        cell_deps.insert(dep);
+                    }
                 }
             }
         }
 
         for (cell, _data) in tx.outputs_with_data_iter() {
             if let Some(script) = cell.type_().to_opt() {
-                let dep = self.find_cell_dep_for_script(&script);
-                cell_deps.insert(dep);
+                if script.code_hash() != TYPE_ID_CODE_HASH.pack()
+                    || script.hash_type() != ScriptHashType::Type.into()
+                {
+                    let dep = self.find_cell_dep_for_script(&script);
+                    cell_deps.insert(dep);
+                }
             }
         }
 
