@@ -305,20 +305,23 @@ impl Context {
 
 impl CellDataProvider for Context {
     // load Cell Data
-    fn load_cell_data(&self, cell: &CellMeta) -> Option<(Bytes, Byte32)> {
+    fn load_cell_data(&self, cell: &CellMeta) -> Option<Bytes> {
         cell.mem_cell_data
             .as_ref()
-            .map(|(data, hash)| (Bytes::from(data.to_vec()), hash.to_owned()))
+            .map(|data| Bytes::from(data.to_vec()))
             .or_else(|| self.get_cell_data(&cell.out_point))
     }
 
-    fn get_cell_data(&self, out_point: &OutPoint) -> Option<(Bytes, Byte32)> {
-        self.cells.get(out_point).map(|(_, data)| {
-            (
-                Bytes::from(data.to_vec()),
-                CellOutput::calc_data_hash(&data),
-            )
-        })
+    fn get_cell_data(&self, out_point: &OutPoint) -> Option<Bytes> {
+        self.cells
+            .get(out_point)
+            .map(|(_, data)| Bytes::from(data.to_vec()))
+    }
+
+    fn get_cell_data_hash(&self, out_point: &OutPoint) -> Option<Byte32> {
+        self.cells
+            .get(out_point)
+            .map(|(_, data)| CellOutput::calc_data_hash(&data))
     }
 }
 
