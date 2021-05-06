@@ -1,6 +1,6 @@
 [package]
 name = "ckb-testtool"
-version = "0.4.0"
+version = "0.4.1"
 authors = ["jjy <jjyruby@gmail.com>"]
 edition = "2018"
 license = "MIT"
@@ -23,8 +23,12 @@ ckb-crypto = "0.40.0"
 ckb-resource = "0.40.0"
 ckb-verification = "0.40.0"
 ckb-traits = "0.40.0"
-# lock ckb-vm, remove this after CKB fixed the dependencies issue
-ckb-vm="=0.19.3"
+# Remove this after CKB fixed the dependencies issue
+ckb-vm = "=0.19.3"
+ckb-vm-definitions = "=0.19.3"
+tentacle-multiaddr = "=0.2.0"
+tentacle-secio = "=0.4.5"
+molecule = "=0.6.0"
 
 [dev-dependencies]
 ckb-system-scripts = "0.5"
