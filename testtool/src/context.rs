@@ -1,9 +1,9 @@
 use crate::tx_verifier::OutputsDataVerifier;
-use ckb_tool::ckb_chain_spec::consensus::TYPE_ID_CODE_HASH;
-use ckb_tool::ckb_error::Error as CKBError;
-use ckb_tool::ckb_script::TransactionScriptsVerifier;
-use ckb_tool::ckb_traits::{CellDataProvider, HeaderProvider};
-use ckb_tool::ckb_types::{
+use ckb_chain_spec::consensus::TYPE_ID_CODE_HASH;
+use ckb_error::Error as CKBError;
+use ckb_script::TransactionScriptsVerifier;
+use ckb_traits::{CellDataProvider, HeaderProvider};
+use ckb_types::{
     bytes::Bytes,
     core::{
         cell::{CellMeta, CellMetaBuilder, ResolvedTransaction},

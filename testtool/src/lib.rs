@@ -10,7 +10,7 @@
 //!
 //! ``` rust
 //! use ckb_testtool::context::Context;
-//! use ckb_tool::ckb_types::{
+//! use ckb_testtool::ckb_types::{
 //!     bytes::Bytes,
 //!     core::TransactionBuilder,
 //!     packed::*,
@@ -85,6 +85,18 @@
 pub mod builtin;
 pub mod context;
 mod tx_verifier;
+
+// re-exports
+pub use ckb_chain_spec;
+pub use ckb_crypto;
+pub use ckb_error;
+pub use ckb_hash;
+pub use ckb_jsonrpc_types;
+pub use ckb_script;
+pub use ckb_traits;
+pub use ckb_types;
+pub use ckb_types::bytes;
+pub use ckb_verification;
 
 #[cfg(test)]
 mod tests;

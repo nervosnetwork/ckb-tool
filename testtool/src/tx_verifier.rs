@@ -1,5 +1,5 @@
-use ckb_tool::ckb_types::core::TransactionView;
-use ckb_tool::ckb_verification::TransactionError;
+use ckb_types::core::TransactionView;
+use ckb_verification::TransactionError;
 
 pub struct OutputsDataVerifier<'a> {
     transaction: &'a TransactionView,
