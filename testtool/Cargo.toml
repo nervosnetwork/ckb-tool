@@ -1,6 +1,6 @@
 [package]
 name = "ckb-testtool"
-version = "0.3.0"
+version = "0.4.0"
 authors = ["jjy <jjyruby@gmail.com>"]
 edition = "2018"
 license = "MIT"
@@ -27,6 +27,8 @@ simple-jsonrpc-client = "0.1"
 serde_json = "1.0"
 serde = "1.0"
 serde_derive = "1.0"
+# lock ckb-vm, remove this after CKB fixed the dependencies issue
+ckb-vm="=0.19.3"
 
 [dev-dependencies]
 ckb-system-scripts = "0.5"

@@ -647,7 +647,7 @@ dependencies = [
 
 [[package]]
 name = "ckb-testtool"
-version = "0.3.0"
+version = "0.4.0"
 dependencies = [
  "ckb-always-success-script",
  "ckb-chain-spec",
@@ -661,6 +661,7 @@ dependencies = [
  "ckb-traits",
  "ckb-types",
  "ckb-verification",
+ "ckb-vm",
  "lazy_static",
  "linked_hash_set",
  "rand 0.7.3",
