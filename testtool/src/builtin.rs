@@ -1,6 +1,6 @@
 //! This module contains some builtin contracts
 
-use ckb_tool::ckb_types::bytes::Bytes;
+use ckb_types::bytes::Bytes;
 use lazy_static::lazy_static;
 
 lazy_static! {

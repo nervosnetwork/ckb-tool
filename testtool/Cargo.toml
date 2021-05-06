@@ -1,6 +1,6 @@
 [package]
 name = "ckb-testtool"
-version = "0.3.0"
+version = "0.4.0"
 authors = ["jjy <jjyruby@gmail.com>"]
 edition = "2018"
 license = "MIT"
@@ -10,10 +10,21 @@ description = "CKB contract testing tools"
 
 [dependencies]
 ckb-always-success-script = "0.0.1"
-ckb-tool = { path = "../tool", version = "0.3.0" }
 rand = "0.7"
 lazy_static = "1.4"
 linked_hash_set = "0.1"
+ckb-chain-spec = "0.40.0"
+ckb-types = "0.40.0"
+ckb-error = "0.40.0"
+ckb-script = "0.40.0"
+ckb-hash = "0.40.0"
+ckb-jsonrpc-types = "0.40.0"
+ckb-crypto = "0.40.0"
+ckb-resource = "0.40.0"
+ckb-verification = "0.40.0"
+ckb-traits = "0.40.0"
+# lock ckb-vm, remove this after CKB fixed the dependencies issue
+ckb-vm="=0.19.3"
 
 [dev-dependencies]
 ckb-system-scripts = "0.5"
