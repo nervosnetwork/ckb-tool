@@ -632,7 +632,7 @@ dependencies = [
 
 [[package]]
 name = "ckb-testtool"
-version = "0.3.0"
+version = "0.3.1"
 dependencies = [
  "ckb-always-success-script",
  "ckb-system-scripts",
@@ -644,7 +644,7 @@ dependencies = [
 
 [[package]]
 name = "ckb-tool"
-version = "0.3.0"
+version = "0.3.1"
 dependencies = [
  "ckb-chain-spec",
  "ckb-crypto",
@@ -656,11 +656,16 @@ dependencies = [
  "ckb-traits",
  "ckb-types",
  "ckb-verification",
+ "ckb-vm",
+ "ckb-vm-definitions",
  "faster-hex 0.4.1",
+ "molecule",
  "serde",
  "serde_derive",
  "serde_json",
  "simple-jsonrpc-client",
+ "tentacle-multiaddr",
+ "tentacle-secio",
 ]
 
 [[package]]
