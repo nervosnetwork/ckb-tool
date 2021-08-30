@@ -1,7 +1,7 @@
 use crate::context::Context;
-use ckb_system_scripts::BUNDLED_CELL;
 use ckb_crypto::secp::{Generator, Privkey};
 use ckb_hash::{blake2b_256, new_blake2b};
+use ckb_system_scripts::BUNDLED_CELL;
 use ckb_types::{
     bytes::Bytes,
     core::{TransactionBuilder, TransactionView},
