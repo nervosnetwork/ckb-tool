@@ -1,6 +1,6 @@
 [package]
 name = "ckb-testtool"
-version = "0.4.1"
+version = "0.5.0"
 authors = ["jjy <jjyruby@gmail.com>"]
 edition = "2018"
 license = "MIT"
