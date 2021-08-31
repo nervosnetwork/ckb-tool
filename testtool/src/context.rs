@@ -1,14 +1,15 @@
 use crate::tx_verifier::OutputsDataVerifier;
-use ckb_chain_spec::consensus::TYPE_ID_CODE_HASH;
+use ckb_chain_spec::consensus::{ConsensusBuilder, TYPE_ID_CODE_HASH};
 use ckb_error::Error as CKBError;
-use ckb_script::TransactionScriptsVerifier;
+use ckb_script::{TransactionScriptsVerifier, TxVerifyEnv};
 use ckb_traits::{CellDataProvider, HeaderProvider};
 use ckb_types::{
     bytes::Bytes,
     core::{
         cell::{CellMeta, CellMetaBuilder, ResolvedTransaction},
-        Capacity, Cycle, DepType, EpochExt, HeaderView, ScriptHashType, TransactionInfo,
-        TransactionView,
+        hardfork::HardForkSwitch,
+        Capacity, Cycle, DepType, EpochExt, EpochNumberWithFraction, HeaderView, ScriptHashType,
+        TransactionInfo, TransactionView,
     },
     packed::{Byte32, CellDep, CellOutput, OutPoint, Script},
     prelude::*,
@@ -282,9 +283,26 @@ impl Context {
 
     /// Verify the transaction in CKB-VM
     pub fn verify_tx(&self, tx: &TransactionView, max_cycles: u64) -> Result<Cycle, CKBError> {
+        let consensus = {
+            let hardfork_switch = HardForkSwitch::new_without_any_enabled()
+                .as_builder()
+                .rfc_0232(200)
+                .build()
+                .unwrap();
+            ConsensusBuilder::default()
+                .hardfork_switch(hardfork_switch)
+                .build()
+        };
+        let tx_env = {
+            let epoch = EpochNumberWithFraction::new(300, 0, 1);
+            let header = HeaderView::new_advanced_builder()
+                .epoch(epoch.pack())
+                .build();
+            TxVerifyEnv::new_commit(&header)
+        };
         self.verify_tx_consensus(tx)?;
         let resolved_tx = self.build_resolved_tx(tx);
-        let mut verifier = TransactionScriptsVerifier::new(&resolved_tx, self);
+        let mut verifier = TransactionScriptsVerifier::new(&resolved_tx, &consensus, self, &tx_env);
         if self.capture_debug {
             let captured_messages = self.captured_messages.clone();
             verifier.set_debug_printer(move |id, message| {
