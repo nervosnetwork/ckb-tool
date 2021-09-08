@@ -70,11 +70,11 @@ impl Context {
             rng.fill(&mut buf);
             buf.pack()
         };
-        let out_point = OutPoint::new(tx_hash.clone(), 0);
+        let out_point = OutPoint::new(tx_hash, 0);
         let cell = CellOutput::new_builder()
             .capacity(Capacity::bytes(data.len()).expect("script capacity").pack())
             .build();
-        self.cells.insert(out_point.clone(), (cell, data.into()));
+        self.cells.insert(out_point.clone(), (cell, data));
         self.cells_by_data_hash.insert(data_hash, out_point.clone());
         out_point
     }
@@ -339,7 +339,7 @@ impl CellDataProvider for Context {
     fn get_cell_data_hash(&self, out_point: &OutPoint) -> Option<Byte32> {
         self.cells
             .get(out_point)
-            .map(|(_, data)| CellOutput::calc_data_hash(&data))
+            .map(|(_, data)| CellOutput::calc_data_hash(data))
     }
 }
 
