@@ -286,7 +286,7 @@ impl Context {
         let consensus = {
             let hardfork_switch = HardForkSwitch::new_without_any_enabled()
                 .as_builder()
-                .rfc_0232(200)
+                .rfc_0032(200)
                 .build()
                 .unwrap();
             ConsensusBuilder::default()
