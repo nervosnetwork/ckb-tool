@@ -145,7 +145,7 @@ fn test_load_header() {
     let test_contract_bin = fs::read(TEST_CONTRACT_PATH).unwrap();
     let lock_out_point = context.deploy_cell(test_contract_bin.to_vec().into());
     let lock_script = context
-        .build_script(&lock_out_point, Default::default())
+        .build_script(&lock_out_point, Bytes::from(vec![42]))
         .expect("script")
         .as_builder()
         .build();
