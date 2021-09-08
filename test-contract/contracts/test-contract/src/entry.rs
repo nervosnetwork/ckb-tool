@@ -23,6 +23,10 @@ pub fn main() -> Result<(), Error> {
     let args: Bytes = script.args().unpack();
     debug!("script args is {:?}", args);
 
+    if args.is_empty() {
+        return Err(Error::MyError);
+    }
+
     let header = load_header(0, Source::Input)?;
     debug!("header1 {:?}", header);
     let header = load_header(0, Source::CellDep)?;
