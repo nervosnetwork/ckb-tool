@@ -19,7 +19,7 @@ jobs:
           target
         key: ${{ runner.os }}-cargo-${{ hashFiles('Cargo.lock') }}
     - name: Install capsule
-      run: cargo install ckb-capsule --version 0.5.0
+      run: cargo install ckb-capsule --version 0.6.0
     - name: Check Rust format
       run: cargo fmt -- --check
     - name: Cargo clippy check
