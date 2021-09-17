@@ -147,22 +147,34 @@ impl Context {
         self.cells.get(out_point).cloned()
     }
 
-    /// Build script with out_point and args
+    /// Build script with out_point, hash_type, args
     /// return none if the out-point is not exist
-    pub fn build_script(&mut self, out_point: &OutPoint, args: Bytes) -> Option<Script> {
+    pub fn build_script_with_hash_type(
+        &mut self,
+        out_point: &OutPoint,
+        hash_type: ScriptHashType,
+        args: Bytes,
+    ) -> Option<Script> {
         let (_, contract_data) = self.cells.get(out_point)?;
         let data_hash = CellOutput::calc_data_hash(contract_data);
         Some(
             Script::new_builder()
                 .code_hash(data_hash)
-                .hash_type(ScriptHashType::Data.into())
+                .hash_type(hash_type.into())
                 .args(args.pack())
                 .build(),
         )
     }
+    /// Build script with out_point, args (hash_type = ScriptHashType::Data1)
+    /// return none if the out-point is not exist
+    pub fn build_script(&mut self, out_point: &OutPoint, args: Bytes) -> Option<Script> {
+        self.build_script_with_hash_type(out_point, ScriptHashType::Data1, args)
+    }
 
     fn find_cell_dep_for_script(&self, script: &Script) -> CellDep {
-        if script.hash_type() != ScriptHashType::Data.into() {
+        if script.hash_type() != ScriptHashType::Data.into()
+            && script.hash_type() != ScriptHashType::Data1.into()
+        {
             panic!("do not support hash_type {} yet", script.hash_type());
         }
 
