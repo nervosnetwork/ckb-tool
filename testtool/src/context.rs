@@ -1,5 +1,5 @@
 use crate::tx_verifier::OutputsDataVerifier;
-use ckb_chain_spec::consensus::{ConsensusBuilder, TYPE_ID_CODE_HASH};
+use ckb_chain_spec::consensus::{Consensus, ConsensusBuilder, TYPE_ID_CODE_HASH};
 use ckb_error::Error as CKBError;
 use ckb_script::{TransactionScriptsVerifier, TxVerifyEnv};
 use ckb_traits::{CellDataProvider, HeaderProvider};
@@ -293,7 +293,44 @@ impl Context {
         self.captured_messages.lock().unwrap().clone()
     }
 
+    /// Verify the transaction by given context (Consensus, TxVerifyEnv) in CKB-VM
+    ///
+    /// Please see below links for more details:
+    ///   - https://docs.rs/ckb-chain-spec/0.101.2/ckb_chain_spec/consensus/struct.Consensus.html
+    ///   - https://docs.rs/ckb-types/0.101.2/ckb_types/core/hardfork/struct.HardForkSwitch.html
+    ///   - https://docs.rs/ckb-script/0.101.2/ckb_script/struct.TxVerifyEnv.html
+    pub fn verify_tx_by_context(
+        &self,
+        tx: &TransactionView,
+        max_cycles: u64,
+        consensus: &Consensus,
+        tx_env: &TxVerifyEnv,
+    ) -> Result<Cycle, CKBError> {
+        self.verify_tx_consensus(tx)?;
+        let resolved_tx = self.build_resolved_tx(tx);
+        let mut verifier = TransactionScriptsVerifier::new(&resolved_tx, consensus, self, tx_env);
+        if self.capture_debug {
+            let captured_messages = self.captured_messages.clone();
+            verifier.set_debug_printer(move |id, message| {
+                let msg = Message {
+                    id: id.clone(),
+                    message: message.to_string(),
+                };
+                captured_messages.lock().unwrap().push(msg);
+            });
+        } else {
+            verifier.set_debug_printer(|_id, msg| {
+                println!("[contract debug] {}", msg);
+            });
+        }
+        verifier.verify(max_cycles)
+    }
+
     /// Verify the transaction in CKB-VM
+    ///
+    /// This method use a default verify context with:
+    ///   - use HardForkSwitch to set `rfc_0032` field to 200 (means enable VM selection feature after epoch 200)
+    ///   - use TxVerifyEnv to set currently transaction `epoch` number to 300
     pub fn verify_tx(&self, tx: &TransactionView, max_cycles: u64) -> Result<Cycle, CKBError> {
         let consensus = {
             let hardfork_switch = HardForkSwitch::new_without_any_enabled()
@@ -312,24 +349,7 @@ impl Context {
                 .build();
             TxVerifyEnv::new_commit(&header)
         };
-        self.verify_tx_consensus(tx)?;
-        let resolved_tx = self.build_resolved_tx(tx);
-        let mut verifier = TransactionScriptsVerifier::new(&resolved_tx, &consensus, self, &tx_env);
-        if self.capture_debug {
-            let captured_messages = self.captured_messages.clone();
-            verifier.set_debug_printer(move |id, message| {
-                let msg = Message {
-                    id: id.clone(),
-                    message: message.to_string(),
-                };
-                captured_messages.lock().unwrap().push(msg);
-            });
-        } else {
-            verifier.set_debug_printer(|_id, msg| {
-                println!("[contract debug] {}", msg);
-            });
-        }
-        verifier.verify(max_cycles)
+        self.verify_tx_by_context(tx, max_cycles, &consensus, &tx_env)
     }
 }
 
