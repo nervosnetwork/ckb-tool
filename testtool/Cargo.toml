@@ -1,6 +1,6 @@
 [package]
 name = "ckb-testtool"
-version = "0.7.0"
+version = "0.7.1"
 authors = ["jjy <jjyruby@gmail.com>"]
 edition = "2018"
 license = "MIT"
@@ -26,8 +26,8 @@ ckb-traits = "0.101.0"
 # Remove this after CKB fixed the dependencies issue
 ckb-vm = "=0.20.0-rc6"
 ckb-vm-definitions = "=0.20.0-rc6"
-tentacle-multiaddr = "0.3.0"
-tentacle-secio = "0.5.0"
+tentacle-multiaddr = "=0.3.0"
+tentacle-secio = "=0.5.0"
 molecule = "0.7.0"
 
 [dev-dependencies]
