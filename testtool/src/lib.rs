@@ -2,9 +2,9 @@
 //!
 //! This module provides testing context for CKB contracts.
 //!
-//! To setup a contract verification context, you may need to import ckb modules to build the
-//! transaction structure or calculate the hash result. `ckb-tool` crate provides re-exports of ckb
-//! modules.
+//! To setup a contract verification context, you may need to import ckb modules
+//! to build the transaction structure or calculate the hash result.
+//! `ckb-testtool` crate provides re-exports of ckb modules.
 //!
 //! # Example
 //!
