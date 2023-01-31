@@ -13,7 +13,6 @@ use ckb_types::{
     packed::{Byte32, CellDep, CellOutput, OutPoint, Script},
     prelude::*,
 };
-use linked_hash_set::LinkedHashSet;
 use rand::{thread_rng, Rng};
 use std::collections::HashMap;
 use std::sync::{Arc, Mutex};
@@ -189,23 +188,26 @@ impl Context {
     /// Complete cell deps for a transaction
     /// this function searches context cells; generate cell dep for referenced scripts.
     pub fn complete_tx(&mut self, tx: TransactionView) -> TransactionView {
-        let mut cell_deps: LinkedHashSet<CellDep> = LinkedHashSet::new();
+        let mut cell_deps: Vec<CellDep> = Vec::new();
 
         for cell_dep in tx.cell_deps_iter() {
-            cell_deps.insert(cell_dep);
+            cell_deps.push(cell_dep);
         }
 
         for i in tx.input_pts_iter() {
             if let Some((cell, _data)) = self.cells.get(&i) {
                 let dep = self.find_cell_dep_for_script(&cell.lock());
-                cell_deps.insert(dep);
-
+                if !cell_deps.contains(&dep) {
+                    cell_deps.push(dep);
+                }
                 if let Some(script) = cell.type_().to_opt() {
                     if script.code_hash() != TYPE_ID_CODE_HASH.pack()
                         || script.hash_type() != ScriptHashType::Type.into()
                     {
                         let dep = self.find_cell_dep_for_script(&script);
-                        cell_deps.insert(dep);
+                        if !cell_deps.contains(&dep) {
+                            cell_deps.push(dep);
+                        }
                     }
                 }
             }
@@ -217,14 +219,16 @@ impl Context {
                     || script.hash_type() != ScriptHashType::Type.into()
                 {
                     let dep = self.find_cell_dep_for_script(&script);
-                    cell_deps.insert(dep);
+                    if !cell_deps.contains(&dep) {
+                        cell_deps.push(dep);
+                    }
                 }
             }
         }
 
         tx.as_advanced_builder()
             .set_cell_deps(Vec::new())
-            .cell_deps(cell_deps.into_iter().collect::<Vec<_>>().pack())
+            .cell_deps(cell_deps.pack())
             .build()
     }
 
