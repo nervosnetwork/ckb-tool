@@ -1,6 +1,6 @@
 [package]
 name = "ckb-testtool"
-version = "0.8.0"
+version = "0.9.0"
 authors = ["jjy <jjyruby@gmail.com>"]
 edition = "2021"
 license = "MIT"
@@ -12,19 +12,16 @@ description = "CKB contract testing tools"
 ckb-always-success-script = "0.0.1"
 rand = "0.7"
 lazy_static = "1.4"
-ckb-chain-spec = "0.104.0"
-ckb-types = "0.104.0"
-ckb-error = "0.104.0"
-ckb-script = "0.104.0"
-ckb-hash = "0.104.0"
-ckb-jsonrpc-types = "0.104.0"
-ckb-crypto = "0.104.0"
-ckb-resource = "0.104.0"
-ckb-verification = "0.104.0"
-ckb-traits = "0.104.0"
-
-# remove this line when ckb-vm stick the version of ckb-vm-definitions
-ckb-vm-definitions = "=0.21.3"
+ckb-chain-spec = "0.108.0"
+ckb-types = "0.108.0"
+ckb-error = "0.108.0"
+ckb-script = "0.108.0"
+ckb-hash = "0.108.0"
+ckb-jsonrpc-types = "0.108.0"
+ckb-crypto = "0.108.0"
+ckb-resource = "0.108.0"
+ckb-verification = "0.108.0"
+ckb-traits = "0.108.0"
 
 [dev-dependencies]
 ckb-system-scripts = "0.5"
